@@ -203,3 +203,10 @@ Gốc `25:44` · About Me `25:76` · How to Play `25:103` · Select the Memory `
   - 4 tên phòng: Oswald 72px, bóng cứng #cc6b24 lệch 4px.
   - Bóng của thẻ: 0 4px 4px đen 25%.
 - **Lệch nhỏ trong Figma:** ở `25:126`, khung máy game (Rectangle 2) nằm ở y = 118 thay vì 115 và tiêu đề lệch 2px. Mình dùng chung ảnh `25:44` cho mọi thẻ nên bỏ qua.
+
+## 6. Font tiêu đề: Bahiana (bạn xác nhận 2026-10-08)
+
+- Tiêu đề pop-up và 4 tên phòng ở trang chủ dùng Bahiana, 61px (chữ cao 46px như ảnh Figma), kéo lên 2px.
+- **Lưu ý:** Bahiana bản Google Fonts trên web hẹp hơn chữ trong ảnh xuất từ Figma khoảng 1,5 lần (BADMINTON: 163px so với 243,5px). Nếu nhìn trên web thấy tiêu đề mảnh hơn Figma, nên kiểm tra trong Figma:
+  - Có cảnh báo "Missing fonts" không.
+  - Layer tiêu đề có letter spacing hoặc font khác không.

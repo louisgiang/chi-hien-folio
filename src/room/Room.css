@@ -99,10 +99,10 @@
    tiêu đề cao 46px, mép trên chữ cách khung 3,5px; nội dung 20px, dòng cách 24,25px,
    mép trên chữ cách khung 4px. */
 .popup__title {
-  margin: -6px 0 0; /* Oswald 56px trong dòng 62px: kéo lên để mép chữ cách khung 3,5px */
+  margin: -2px 0 0; /* mép trên chữ cách khung 3,5px như Figma */
   font-family: var(--font-popup-title);
   font-weight: 400;
-  font-size: 56px;
+  font-size: 61px; /* Bahiana 61px: chữ cao 46px như ảnh Figma */
   line-height: 62px;
   text-transform: uppercase;
   white-space: pre; /* chỉ xuống dòng ở \n, như Figma */

@@ -5,8 +5,8 @@
   --letterbox: #0b0b10;
   --font-title: 'Bahiana', 'Impact', sans-serif;
   --font-body: 'ABeeZee', system-ui, sans-serif;
-  /* Tiêu đề pop-up: ảnh Figma khớp Oswald (không phải Bahiana), xem NOTES.md, chờ xác nhận */
-  --font-popup-title: 'Oswald', 'Impact', sans-serif;
+  /* Tiêu đề pop-up: Bahiana (bạn xác nhận 2026-10-08). Xem NOTES.md về độ rộng chữ */
+  --font-popup-title: 'Bahiana', 'Impact', sans-serif;
   color-scheme: dark;
 }
 
