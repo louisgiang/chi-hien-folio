@@ -1,33 +1,60 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Stage } from './stage/Stage';
 import { PortraitHint } from './stage/PortraitHint';
 import { Room } from './room/Room';
 import { sports } from './rooms/sports';
+import { robotics } from './rooms/robotics';
+import { community } from './rooms/community';
+import { iar } from './rooms/iar';
 import type { RoomConfig } from './room/types';
 
 // Định tuyến bằng hash để build tĩnh chạy được ở mọi host.
-// Hiện mới có phòng Sports; trang chủ và các phòng khác dựng ở bước 3.
-const ROOMS: Record<string, RoomConfig> = { sports };
+// Trang chủ chưa dựng (chờ quyết định, xem NOTES.md); mặc định vào Sports (Flow 1 của prototype).
+const ROOMS: Record<string, RoomConfig> = { sports, robotics, community, iar };
 const DEFAULT_ROOM = 'sports';
+// Khớp với --dur trong styles.css (Smart Animate 300ms giữa hai phòng).
+const ROOM_FADE_MS = 300;
 
-function useRoute() {
-  const read = () => location.hash.replace(/^#\/?/, '') || DEFAULT_ROOM;
-  const [route, setRoute] = useState(read);
+const readRoute = () => {
+  const id = location.hash.replace(/^#\/?/, '');
+  return id in ROOMS ? id : DEFAULT_ROOM;
+};
+
+export default function App() {
+  const [route, setRoute] = useState(readRoute);
+  // Phòng cũ còn nằm bên dưới trong lúc phòng mới mờ dần vào.
+  const [leaving, setLeaving] = useState<string | null>(null);
+  const current = useRef(route);
+
   useEffect(() => {
-    const onHash = () => setRoute(read());
+    const onHash = () => {
+      const next = readRoute();
+      if (next === current.current) return;
+      setLeaving(current.current);
+      current.current = next;
+      setRoute(next);
+    };
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
-  return route;
-}
 
-export default function App() {
-  const route = useRoute();
-  const room = ROOMS[route] ?? ROOMS[DEFAULT_ROOM];
+  useEffect(() => {
+    if (!leaving) return;
+    const t = setTimeout(() => setLeaving(null), ROOM_FADE_MS);
+    return () => clearTimeout(t);
+  }, [leaving, route]);
+
   return (
     <>
       <Stage>
-        <Room key={room.id} room={room} />
+        {leaving && leaving !== route && (
+          <div key={leaving} className="room-layer" data-leaving inert>
+            <Room room={ROOMS[leaving]} />
+          </div>
+        )}
+        <div key={route} className="room-layer" data-entering={leaving ? true : undefined}>
+          <Room room={ROOMS[route]} />
+        </div>
       </Stage>
       <PortraitHint />
     </>

@@ -105,7 +105,7 @@
   font-size: 56px;
   line-height: 62px;
   text-transform: uppercase;
-  white-space: nowrap;
+  white-space: pre; /* chỉ xuống dòng ở \n, như Figma */
 }
 
 .popup__body {
@@ -113,12 +113,17 @@
   font-family: var(--font-body);
   font-size: 20px;
   line-height: 24.25px;
+  white-space: pre-line; /* giữ đoạn/dòng trống như Figma */
 }
 
 /* Ảnh đã có sẵn góc bo trong suốt từ Figma */
 .popup__img,
 .popup__overlay {
   display: block;
+}
+.popup__img {
+  object-fit: cover;
+  object-position: top;
 }
 
 /* Khung giữ chỗ khi chưa có ảnh */

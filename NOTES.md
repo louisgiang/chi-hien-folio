@@ -167,3 +167,20 @@ Gốc `25:44` · About Me `25:76` · How to Play `25:103` · Select the Memory `
 - Trang chủ: About Me / How to Play / Select the Memory, cùng 4 lựa chọn phòng.
 - Menu trên cùng, trừ Sports → Robotics và Robotics → Sports.
 - Sports: không có đường từ pop-up quay về gốc.
+
+## 4. Các phòng còn lại (2026-10-08)
+
+- Đã dựng sẵn cấu hình **Robotics, Community, IAR** (`src/rooms/*.ts`) theo bảng ở mục 1. Tọa độ ô hover, khung pop-up và ảnh lấy từ dữ liệu layer đọc ở bước 1. Chưa có ảnh nên đang hiện khung giữ chỗ.
+- Danh sách ảnh cần xuất: [EXPORT.md](EXPORT.md). Chạy `npm run assets -- <phòng>` sau khi xuất.
+- `convert-export.mjs` tự kiểm tra từng ảnh hover so với ảnh gốc:
+  - Ngoài vùng đồ vật, nền phải khớp.
+  - Ảnh hover không được còn khung giới thiệu.
+  - Sports đã qua cả hai bước kiểm tra.
+- **Robotics `6:68`, `6:84` và cả 3 hover của IAR** trong Figma vẫn còn khung giới thiệu. Theo quyết định "ẩn khung giới thiệu khi hover ở mọi phòng", cần ẩn layer đó trước khi xuất (đã ghi trong EXPORT.md).
+- **Cột đo nước (IAR)** không có frame hover. Script ghép ảnh hover từ ảnh gốc và layer cột 37:328: phóng 1,112 lần quanh tâm như laptop, thêm bóng trắng radius 40 / 75% như các hover IAR khác. Đây là chỗ thêm ngoài Figma.
+- **Liên kết menu theo prototype:** Sports "Robotics" → Robotics, Robotics "Sports" → Sports. Đổi phòng bằng hiệu ứng mờ dần 300ms ease-out. Các mục menu khác chưa nối, chờ quyết định.
+- **Ảnh pop-up vượt mép dưới frame** (image 20, 21, 22, 24, 25, 27): khung ảnh được cắt theo mép frame, dùng `object-fit: cover` neo trên. Ảnh xuất ra bị Figma cắt hay để nguyên đều không méo.
+- **Robotics Competitions:** hai đoạn chữ cao 328px chồng lên vùng ảnh. Có thể Figma dùng dòng trống để chừa chỗ cho ảnh, cần ảnh đối chiếu `6:237` để xác định.
+- **Text rời ngoài frame** (35:244 "Vietnam Signature…", 35:249 "VEX V5 … National Championship…") có thể là nội dung dành cho pop-up Competitions. Chưa dùng.
+- **Chờ nội dung chữ đầy đủ:** Robotics (6 đoạn), Community (7 đoạn + 4 tiêu đề đang bị cắt, tiêu đề Cerebral Palsy 2 dòng), IAR (4 đoạn). Đang đánh dấu `[chờ nội dung]`.
+- **Trang chủ chưa dựng**, chờ quyết định có nối menu hay không. Hiện mặc định vào Sports (Flow 1).

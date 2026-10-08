@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { STAGE_W, useStageScale } from '../stage/Stage';
+import { STAGE_H, STAGE_W, useStageScale } from '../stage/Stage';
 import type { Box, Popup, RoomConfig, RoomObject } from './types';
 import './Room.css';
 
@@ -17,6 +17,9 @@ const CROSSFADE_MS = 300;
 const LEAVE_GRACE_MS = 80;
 
 const boxStyle = (b: Box): CSSProperties => ({ left: b.x, top: b.y, width: b.w, height: b.h });
+// Ảnh vượt mép dưới frame: chỉ phần trong frame là nhìn thấy. Figma có thể cắt sẵn khi xuất;
+// cắt khung theo mép frame + object-fit: cover (neo trên) để ảnh cắt hay nguyên đều không méo.
+const clipToStage = (b: Box): Box => ({ ...b, h: Math.min(b.h, STAGE_H - b.y) });
 
 // Ô trong suốt phóng theo khung layer của frame hover.
 function hoverTransform(o: RoomObject) {
@@ -154,6 +157,12 @@ export function Room({ room }: { room: RoomConfig }) {
         );
       })}
 
+      {/* Liên kết có trong prototype (chữ trên menu đã in sẵn trong ảnh) */}
+      {room.links?.map((l) => (
+        <a key={l.to + l.label} className="hotspot" href={l.to} aria-label={l.label} style={boxStyle(l.box)}
+          onClick={(e) => e.stopPropagation()} />
+      ))}
+
       {room.popups.map((p) => {
         const isOpen = open === p.id;
         const panelRef = (el: HTMLElement | null) => void (el ? panels.current.set(p.id, el) : panels.current.delete(p.id));
@@ -186,9 +195,11 @@ export function Room({ room }: { room: RoomConfig }) {
               )}
             </div>
             <h2 id={`${p.id}-title`} className="popup__title" style={boxStyle(p.title.box)}>{p.title.text}</h2>
-            <p className="popup__body" style={boxStyle(p.body.box)}>{p.body.text}</p>
+            {p.texts.map((t, i) => (
+              <p key={i} className="popup__body" style={boxStyle(t.box)}>{t.text}</p>
+            ))}
             {p.images.map((img) => (
-              <Img key={img.asset} room={room.id} asset={img.asset} label={img.alt} className="popup__img" style={boxStyle(img.box)} />
+              <Img key={img.asset} room={room.id} asset={img.asset} label={img.alt} className="popup__img" style={boxStyle(clipToStage(img.box))} />
             ))}
             {overlay && (
               <Img room={room.id} asset={p.overlay!} label="" className="popup__overlay" style={boxStyle(overlay)} />
@@ -243,11 +254,11 @@ function CompactPopup({ room, popup, panelRef, onClose }: {
       >
         <button type="button" className="popup-compact__close" aria-label="Đóng" onClick={onClose}>×</button>
         <h2 id={`${popup.id}-title-c`} className="popup__title">{popup.title.text}</h2>
-        <p className="popup__body">{popup.body.text}</p>
+        {popup.texts.map((t, i) => <p key={i} className="popup__body">{t.text}</p>)}
         <div className="popup-compact__imgs">
           {popup.images.map((img) => (
             <Img key={img.asset} room={room} asset={img.asset} label={img.alt} className="popup__img"
-              style={{ aspectRatio: `${img.box.w} / ${img.box.h}` }} />
+              style={{ aspectRatio: `${img.box.w} / ${clipToStage(img.box).h}` }} />
           ))}
         </div>
       </section>

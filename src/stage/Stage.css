@@ -12,3 +12,16 @@
   transform-origin: center;
   overflow: hidden;
 }
+
+/* Chuyển phòng: phòng mới mờ dần lên trên phòng cũ (Smart Animate 300ms ease-out) */
+.room-layer {
+  position: absolute;
+  inset: 0;
+}
+.room-layer[data-entering] {
+  animation: room-in var(--dur) var(--ease) both;
+}
+@keyframes room-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

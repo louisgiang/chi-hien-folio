@@ -4,7 +4,7 @@ export type Box = { x: number; y: number; w: number; h: number };
 export type RoomObject = {
   id: string;
   label: string;
-  /** Ảnh full-frame của trạng thái hover (src/assets/<room>/<frame>.webp, kèm bản -sm). */
+  /** Ảnh full-frame của trạng thái hover (src/assets/<room>/<frame>.webp, kèm bản -sm / -2x). */
   frame: string;
   /** Ô trong suốt nhận hover/click: khung layer ở frame gốc. */
   base: Box;
@@ -14,18 +14,24 @@ export type RoomObject = {
 };
 
 export type PopupImage = { asset: string; box: Box; alt: string };
+export type PopupText = { text: string; box: Box };
 
 export type Popup = {
   id: string;
   /** Đồ vật được làm sáng khi pop-up mở: nền phía sau là ảnh hover của nó. */
   object: string;
   glass: Box;
-  title: { text: string; box: Box };
-  body: { text: string; box: Box };
+  /** Xuống dòng bằng \n đúng như Figma (tiêu đề không tự ngắt dòng). */
+  title: PopupText;
+  /** Một hoặc nhiều đoạn chữ, mỗi đoạn một khung như trong Figma. */
+  texts: PopupText[];
   images: PopupImage[];
   /** Layer đồ vật nằm trên thẻ kính; vị trí lấy từ overlays.json. */
   overlay?: string;
 };
+
+/** Liên kết có sẵn trong prototype (ví dụ chữ trên menu), dạng ô trong suốt. */
+export type RoomLink = { label: string; box: Box; to: string };
 
 export type RoomConfig = {
   id: string;
@@ -34,5 +40,6 @@ export type RoomConfig = {
   base: string;
   objects: RoomObject[];
   popups: Popup[];
+  links?: RoomLink[];
   overlays?: Record<string, Box>;
 };

@@ -10,6 +10,8 @@ export const sports: RoomConfig = {
   name: 'Sports',
   base: 'sports-base',
   overlays,
+  // Prototype: chữ "Robotics" (1:13) trên menu, click → 6:28.
+  links: [{ label: 'Robotics', box: { x: 947, y: 25, w: 93, h: 27 }, to: '#/robotics' }],
   objects: [
     {
       id: 'racket',
@@ -44,11 +46,7 @@ export const sports: RoomConfig = {
       overlay: 'badminton-above-racket',
       glass: { x: 499, y: 131, w: 1019, h: 895 },
       title: { text: 'Badminton', box: { x: 529, y: 168, w: 248, h: 62 } },
-      body: {
-        box: { x: 529, y: 238, w: 943, h: 75 },
-        text:
-          "Although badminton hasn't always been my first choice, I fell in love with it after I could no longer play soccer to the best of my ability due to my collarbone injury. I ended up joining the school's badminton club and participated in 2 tournaments.",
-      },
+      texts: [{ box: { x: 529, y: 238, w: 943, h: 75 }, text: "Although badminton hasn't always been my first choice, I fell in love with it after I could no longer play soccer to the best of my ability due to my collarbone injury. I ended up joining the school's badminton club and participated in 2 tournaments." }],
       images: [
         { asset: 'badminton-1', alt: 'Badminton 1', box: { x: 529, y: 336, w: 446, h: 338 } },
         { asset: 'badminton-2', alt: 'Badminton 2', box: { x: 1009, y: 336, w: 446, h: 338 } },
@@ -61,11 +59,7 @@ export const sports: RoomConfig = {
       overlay: 'soccer-above-ball',
       glass: { x: 845, y: 92, w: 1019, h: 895 },
       title: { text: 'Soccer', box: { x: 875, y: 142, w: 169, h: 62 } },
-      body: {
-        box: { x: 875, y: 212, w: 943, h: 75 },
-        text:
-          'Every Sunday, my father would take me to soccer practice, and it introduced me to the competitive side of sports. It also taught me that teamwork makes the dream work.',
-      },
+      texts: [{ box: { x: 875, y: 212, w: 943, h: 75 }, text: 'Every Sunday, my father would take me to soccer practice, and it introduced me to the competitive side of sports. It also taught me that teamwork makes the dream work.' }],
       images: [
         { asset: 'soccer-1', alt: 'Soccer 1', box: { x: 875, y: 287, w: 445, h: 337 } },
         { asset: 'soccer-2', alt: 'Soccer 2', box: { x: 1353, y: 287, w: 445, h: 337 } },
@@ -77,11 +71,7 @@ export const sports: RoomConfig = {
       // 1:111: đồ vật nằm dưới thẻ kính. Nền là ảnh hover 1:20 nên không còn "vàng (ele 1)" sáng nhầm.
       glass: { x: 845, y: 133, w: 1019, h: 895 },
       title: { text: 'Swimming', box: { x: 876, y: 181, w: 229, h: 62 } },
-      body: {
-        box: { x: 876, y: 251, w: 896, h: 75 },
-        text:
-          'When we were kids, my father used to take my brother and me to the local swimming pool for lessons. Once we learned to swim, he would drop the locker keys into the water to teach us how to dive.',
-      },
+      texts: [{ box: { x: 876, y: 251, w: 896, h: 75 }, text: 'When we were kids, my father used to take my brother and me to the local swimming pool for lessons. Once we learned to swim, he would drop the locker keys into the water to teach us how to dive.' }],
       images: [
         { asset: 'swimming-1', alt: 'Swimming 1', box: { x: 875, y: 340, w: 475, h: 359 } },
         { asset: 'swimming-2', alt: 'Swimming 2', box: { x: 1360, y: 340, w: 475, h: 359 } },

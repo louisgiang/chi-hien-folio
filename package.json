@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "figma:sports": "node scripts/fetch-figma.mjs sports",
-    "assets:sports": "node scripts/convert-export.mjs sports"
+    "assets": "node scripts/convert-export.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",
