@@ -1,0 +1,9 @@
+node_modules
+dist
+.figma-tmp
+# Token Figma chỉ nằm trong biến môi trường, không bao giờ nằm trong file
+.env
+.env.*
+
+# Ảnh PNG gốc xuất tay từ Figma (~46 MB): giữ ở máy, chỉ commit WebP đã chuyển
+figma-export/

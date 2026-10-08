@@ -1,0 +1,36 @@
+:root {
+  /* Smart Animate của Figma: 300ms, ease-out = cubic-bezier(0, 0, 0.58, 1) */
+  --dur: 300ms;
+  --ease: cubic-bezier(0, 0, 0.58, 1);
+  --letterbox: #0b0b10;
+  --font-title: 'Bahiana', 'Impact', sans-serif;
+  --font-body: 'ABeeZee', system-ui, sans-serif;
+  /* Tiêu đề pop-up: ảnh Figma khớp Oswald (không phải Bahiana), xem NOTES.md, chờ xác nhận */
+  --font-popup-title: 'Oswald', 'Impact', sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0;
+  height: 100%;
+  background: var(--letterbox);
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #fff;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button { font: inherit; color: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: 0ms; }
+  *, *::before, *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}

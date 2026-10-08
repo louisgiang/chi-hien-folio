@@ -1,0 +1,186 @@
+.room {
+  position: absolute;
+  inset: 0;
+  user-select: none;
+}
+
+.room > *,
+.popup > * {
+  position: absolute;
+}
+
+/* Ảnh full-frame: gốc luôn hiện, ảnh hover xếp chồng lên và crossfade 300ms */
+.frame {
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  display: block;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+  /* Mỗi ảnh một lớp GPU riêng: đổi độ mờ không phải vẽ lại */
+  will-change: opacity;
+}
+.frame[data-visible] { opacity: 1; z-index: 2; }
+/* Ảnh hover cũ giữ nguyên bên dưới khi ảnh mới đang hiện lên */
+.frame[data-held] { opacity: 1; z-index: 1; transition: none; }
+
+/* Ô trong suốt nhận hover/click theo khung layer của đồ vật */
+.hotspot {
+  z-index: 10;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform-origin: 0 0;
+  transition: transform var(--dur) var(--ease);
+}
+.hotspot:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Thẻ kính: đo từ ảnh đối chiếu Figma 1:74 (xem NOTES.md).
+   Viền trắng đặc 3px, bo 15px, nền mờ sigma 8 + phủ trắng 10%.
+   Nền mờ là ảnh làm mờ sẵn (.glass__bg) thay cho backdrop-filter để chuyển động mượt. */
+.glass {
+  --glass-border: 3px;
+  overflow: hidden;
+  border-radius: 15px;
+  border: var(--glass-border) solid #fff;
+  isolation: isolate;
+}
+/* Lớp phủ trắng nằm trên ảnh mờ (chỉ thẻ trên sân khấu; thẻ thu gọn có nền riêng) */
+.popup .glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.1);
+}
+.glass__bg {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  max-width: none;
+  display: block;
+}
+/* Dự phòng khi chưa có ảnh mờ, và cho pop-up thu gọn (nằm ngoài sân khấu) */
+.glass[data-live],
+.popup-compact__panel.glass {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.glass[data-live] { background: rgba(255, 255, 255, 0.1); }
+
+/* Pop-up: luôn được render để có hiệu ứng mờ dần khi đóng */
+.popup {
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  outline: none;
+  will-change: opacity;
+  transition: opacity var(--dur) var(--ease), visibility 0s linear var(--dur);
+}
+.popup[data-open] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--dur) var(--ease), visibility 0s;
+}
+/* Chỉ thẻ kính và nội dung nhận click; phần còn lại là "ra ngoài" */
+.popup[data-open] > * { pointer-events: auto; }
+/* Layer đồ vật đè lên thẻ kính: chỉ để nhìn, không chặn click */
+.popup[data-open] > .popup__overlay { pointer-events: none; }
+
+/* Chữ đo từ ảnh đối chiếu Figma (1:74, 1:92, 1:111):
+   tiêu đề cao 46px, mép trên chữ cách khung 3,5px; nội dung 20px, dòng cách 24,25px,
+   mép trên chữ cách khung 4px. */
+.popup__title {
+  margin: -6px 0 0; /* Oswald 56px trong dòng 62px: kéo lên để mép chữ cách khung 3,5px */
+  font-family: var(--font-popup-title);
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 62px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.popup__body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 20px;
+  line-height: 24.25px;
+}
+
+/* Ảnh đã có sẵn góc bo trong suốt từ Figma */
+.popup__img,
+.popup__overlay {
+  display: block;
+}
+
+/* Khung giữ chỗ khi chưa có ảnh */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 2px dashed rgba(255, 255, 255, 0.7);
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,.08) 0 12px, rgba(255,255,255,.16) 12px 24px);
+  font-size: 18px;
+  text-align: center;
+  color: #fff;
+}
+.placeholder small { font-size: 13px; opacity: 0.7; }
+.frame.placeholder { background-color: #2b6f74; }
+
+/* Pop-up trên màn hình nhỏ: gần toàn màn hình, cuộn được, chữ theo px thật */
+.popup-compact {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+}
+
+.popup-compact__panel {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 20px 24px;
+  outline: none;
+  background: rgba(30, 30, 40, 0.35);
+}
+
+.popup-compact .popup__title { margin: 0; font-size: 34px; line-height: 1.1; white-space: normal; padding-right: 40px; }
+.popup-compact .popup__body { font-size: 16px; line-height: 1.5; margin: 10px 0 16px; }
+
+.popup-compact__imgs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.popup-compact__imgs > * { width: 100%; height: auto; }
+
+.popup-compact__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
