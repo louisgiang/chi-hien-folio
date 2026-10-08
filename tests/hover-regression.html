@@ -1,0 +1,140 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Hover regression checks</title>
+<style>body{font:16px system-ui;background:#111;color:#eee}iframe{width:1280px;height:720px;border:0}pre{white-space:pre-wrap}</style>
+<h1>Hover regression checks</h1>
+<pre id="results">Running…</pre>
+<iframe src="/" title="Portfolio under test"></iframe>
+<script type="module">
+const output = document.querySelector('#results');
+const iframe = document.querySelector('iframe');
+await new Promise(resolve => iframe.addEventListener('load', resolve, { once: true }));
+const win = iframe.contentWindow;
+const doc = iframe.contentDocument;
+const readyDeadline = performance.now() + 5000;
+while (!doc.querySelector('.hotspot') && performance.now() < readyDeadline) {
+  await new Promise(resolve => win.requestAnimationFrame(resolve));
+}
+const buttons = [...doc.querySelectorAll('.hotspot')];
+const frames = [...doc.querySelectorAll('.room__frames .frame')];
+const lifts = [...doc.querySelectorAll('.sports-lift__object')];
+const scaleOf = el => new win.DOMMatrix(win.getComputedStyle(el).transform).a;
+const restScales = lifts.map(scaleOf);
+const next = () => new Promise(resolve => win.requestAnimationFrame(resolve));
+const weights = () => frames.map(frame => Number(win.getComputedStyle(frame).opacity));
+const results = [];
+const assert = (condition, message) => { if (!condition) throw Error(message); };
+const checkWeights = () => {
+  const values = weights();
+  assert(values.every(value => value >= 0 && value <= 1), `Invalid opacity: ${values}`);
+  assert(Math.abs(values.reduce((sum, value) => sum + value, 0) - 1) < 0.0001,
+    `Brightness changed during crossfade: ${values}`);
+};
+const sample = async (ms) => {
+  const start = performance.now();
+  do { await next(); checkWeights(); } while (performance.now() - start < ms);
+};
+const settled = (index) => {
+  const frameIndex = 0;
+  weights().forEach((value, i) =>
+    assert(Math.abs(value - Number(i === frameIndex)) < 0.001, `Wrong final frame: ${weights()}`));
+  lifts.forEach((lift, i) => assert(Math.abs(scaleOf(lift) - (index === i + 1 ? 1 : restScales[i])) < 0.001, 'Sprite did not settle'));
+};
+const transitioning = index =>
+  scaleOf(lifts[index]) > restScales[index] + 0.001 && scaleOf(lifts[index]) < 0.999;
+let current = null;
+function hover(index) {
+  const target = index === null ? null : buttons[index];
+  current?.dispatchEvent(new win.PointerEvent('pointerout', {
+    bubbles: true, pointerType: 'mouse', relatedTarget: target ?? doc.body,
+  }));
+  target?.dispatchEvent(new win.PointerEvent('pointerover', {
+    bubbles: true, pointerType: 'mouse', relatedTarget: current ?? doc.body,
+  }));
+  current = target;
+}
+const test = async (name, run) => {
+  await run(); results.push(`PASS: ${name}`); output.textContent = results.join('\n');
+};
+try {
+  assert(buttons.length === 3 && frames.length === 4 && lifts.length === 3, 'Expected Sports room with three moving objects');
+  await Promise.all([...doc.images].map(img => img.decode().catch(() => {})));
+  await test('Initial frame and decoded images', async () => { settled(0); });
+  await test('Racket, shoes and key scale continuously in both directions', async () => {
+    for (let i = 0; i < buttons.length; i++) {
+      hover(i); await sample(100);
+      assert(transitioning(i), 'Enter must interpolate');
+      await sample(600); settled(i + 1);
+      hover(null); await sample(170);
+      assert(transitioning(i), 'Leave must interpolate');
+      await sample(600); settled(0);
+    }
+  });
+  await test('Every object pair transitions without enlarged-frame ghosting', async () => {
+    for (const [a, b] of [[0,1],[1,0],[0,2],[2,0],[1,2],[2,1]]) {
+      hover(a); await sample(620); settled(a + 1);
+      hover(b); await sample(100);
+      assert(weights().slice(1).every(value => value === 0), 'Enlarged raster frame caused a second silhouette');
+      assert(transitioning(a), 'Outgoing object disappeared prematurely');
+      await sample(600); settled(b + 1);
+    }
+  });
+  await test('Rapid reversals and interrupted transitions keep brightness stable', async () => {
+    for (const i of [0,1,2,1,0,2,0,1,0,2,1,2]) { hover(i); await sample(40); }
+    await sample(620); settled(3);
+    hover(null); await sample(110); hover(0); await sample(620); settled(1);
+  });
+  await test('Active hit areas retain the entire original rectangle', async () => {
+    hover(null); await sample(700);
+    for (let i = 0; i < buttons.length; i++) {
+      const base = buttons[i].getBoundingClientRect();
+      hover(i); await sample(620);
+      const active = buttons[i].getBoundingClientRect();
+      // Stage scaling can round identical edges by a fraction of a CSS pixel.
+      const epsilon = 0.01;
+      assert(active.left <= base.left + epsilon && active.top <= base.top + epsilon && active.right >= base.right - epsilon && active.bottom >= base.bottom - epsilon,
+        `Hit area ${i} moved away from the pointer: ${JSON.stringify({ base, active })}`);
+      assert(win.getComputedStyle(buttons[i]).transform === 'none', 'Hit area must not animate');
+      hover(null); await sample(700);
+    }
+  });
+  await test('Mouse click opens each popup; Escape closes it', async () => {
+    for (let i = 0; i < buttons.length; i++) {
+      hover(i); await sample(620); buttons[i].click(); await next();
+      assert(buttons[i].getAttribute('aria-expanded') === 'true', 'Popup did not open');
+      const z = Number(win.getComputedStyle(lifts[i]).zIndex);
+      assert(i === 2 ? z < 40 : z > 40, 'Object is on the wrong side of the popup glass');
+      win.dispatchEvent(new win.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await next(); assert(buttons[i].getAttribute('aria-expanded') === 'false', 'Popup did not close');
+    }
+    doc.activeElement?.blur(); hover(null); await sample(700);
+  });
+  await test('Touch requires first tap to highlight, second tap to open', async () => {
+    const tap = () => {
+      buttons[0].dispatchEvent(new win.PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch' }));
+      buttons[0].dispatchEvent(new win.MouseEvent('click', { bubbles: true, detail: 1 }));
+    };
+    tap(); await sample(620); settled(1);
+    assert(buttons[0].getAttribute('aria-expanded') === 'false', 'First tap opened popup');
+    tap(); await next(); assert(buttons[0].getAttribute('aria-expanded') === 'true', 'Second tap did not open popup');
+    win.dispatchEvent(new win.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await next(); doc.activeElement?.blur(); await sample(620);
+  });
+  await test('Zero-duration transitions settle safely without animation', async () => {
+    // Apply the same zero-duration rule used by reduced-motion CSS. This does
+    // not emulate the OS preference; it exercises the resulting animation path.
+    const style = doc.createElement('style');
+    style.textContent = '*, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }';
+    doc.head.append(style);
+    try {
+      await next(); hover(2); await next(); await next(); settled(3);
+      assert(lifts.every(lift => !lift.getAnimations().length), 'Unexpected animation with zero duration');
+    } finally { style.remove(); }
+  });
+  output.textContent += `\n\n${results.length} checks passed.`;
+  document.title = 'PASS — Hover regression checks';
+} catch (error) {
+  output.textContent = `${results.join('\n')}\nFAIL: ${error.stack}`;
+  document.title = 'FAIL — Hover regression checks';
+}
+</script>

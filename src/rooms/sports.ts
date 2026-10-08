@@ -29,7 +29,7 @@ export const sports: RoomConfig = {
     },
     {
       id: 'whistle',
-      label: 'Cái còi: Swimming',
+      label: 'Chìa khóa: Swimming',
       frame: 'sports-hover-goggles',
       base: { x: 1339, y: 733, w: 101, h: 87 },
       hover: { x: 1314, y: 711, w: 151, h: 131 },

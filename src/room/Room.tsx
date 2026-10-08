@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type Mous
 import { createPortal } from 'react-dom';
 import { STAGE_W, useStageScale } from '../stage/Stage';
 import type { Box, Popup, RoomConfig, RoomObject } from './types';
+import { useFrameCrossfade } from './useFrameCrossfade';
+import { hasSportsLift, SportsLift } from './SportsLift';
 import './Room.css';
 
 // Ảnh chuyển từ figma-export/ bằng scripts/convert-export.mjs. Thiếu file thì hiện khung giữ chỗ.
@@ -12,17 +14,19 @@ const assetUrl = (room: string, name: string) => ASSETS[`../assets/${room}/${nam
 // chuyển pop-up sang chế độ gần toàn màn hình, cuộn được.
 const BODY_FONT = 20;
 const MIN_READABLE = 12;
-// Khớp với --dur trong styles.css.
-const CROSSFADE_MS = 300;
 const LEAVE_GRACE_MS = 80;
 
 const boxStyle = (b: Box): CSSProperties => ({ left: b.x, top: b.y, width: b.w, height: b.h });
 
-// Ô trong suốt phóng theo khung layer của frame hover.
-function hoverTransform(o: RoomObject) {
-  const sx = o.hover.w / o.base.w;
-  const sy = o.hover.h / o.base.h;
-  return `translate(${o.hover.x - o.base.x}px, ${o.hover.y - o.base.y}px) scale(${sx}, ${sy})`;
+// Giữ toàn bộ vùng gốc khi mở rộng để animation không đẩy chuột ra/vào ô.
+function activeBox(o: RoomObject): Box {
+  const x = Math.min(o.base.x, o.hover.x);
+  const y = Math.min(o.base.y, o.hover.y);
+  return {
+    x, y,
+    w: Math.max(o.base.x + o.base.w, o.hover.x + o.hover.w) - x,
+    h: Math.max(o.base.y + o.base.h, o.hover.y + o.hover.h) - y,
+  };
 }
 
 export function Room({ room }: { room: RoomConfig }) {
@@ -96,21 +100,9 @@ export function Room({ room }: { room: RoomConfig }) {
   // Đồ vật đang sáng: pop-up đang mở ưu tiên, rồi tới hover/focus.
   const lit = openPopup?.object ?? hovered ?? focused;
 
-  // Chuyển thẳng từ hover đồ vật A sang B: giữ ảnh A bên dưới tới khi ảnh B hiện xong,
-  // để ảnh gốc không lộ ra giữa chừng (không bị chớp).
-  const [held, setHeld] = useState<string | null>(null);
-  const prevLit = useRef(lit);
-  useEffect(() => {
-    const prev = prevLit.current;
-    prevLit.current = lit;
-    if (!prev || !lit || prev === lit) {
-      setHeld(null);
-      return;
-    }
-    setHeld(prev);
-    const t = setTimeout(() => setHeld(null), CROSSFADE_MS);
-    return () => clearTimeout(t);
-  }, [lit]);
+  const framesRef = useRef<HTMLDivElement>(null);
+  // Sports objects move as separate layers; never fade in their enlarged frames.
+  useFrameCrossfade(framesRef, hasSportsLift(room, lit) ? 0 : room.objects.findIndex((o) => o.id === lit) + 1);
 
   // Giải mã sẵn mọi ảnh khi vào phòng, để lần hover đầu tiên không bị khựng.
   const roomRef = useRef<HTMLDivElement>(null);
@@ -127,11 +119,19 @@ export function Room({ room }: { room: RoomConfig }) {
       onPointerDownCapture={(e) => (pointerType.current = e.pointerType)}
       onClick={onBackgroundClick}
     >
-      <Frame room={room.id} name={room.base} sizes={sizes} label={`${room.name}: trạng thái gốc`} visible />
-      {room.objects.map((o) => (
-        <Frame key={o.id} room={room.id} name={o.frame} sizes={sizes} label={`${o.label}: hover`}
-          visible={lit === o.id} held={held === o.id} />
-      ))}
+      <div ref={framesRef} className="room__frames" aria-hidden="true">
+        <Frame room={room.id} name={room.base} sizes={sizes} label={`${room.name}: trạng thái gốc`} visible />
+        {room.objects.map((o) => (
+          <Frame key={o.id} room={room.id} name={o.frame} sizes={sizes} label={`${o.label}: hover`} visible={false} />
+        ))}
+      </div>
+
+      {room.id === 'sports' && (
+        <div className="sports-intro-cover" data-active={lit !== null || undefined} aria-hidden="true">
+          <Frame room={room.id} name="sports-hover-goggles" sizes={sizes} label="" visible className="sports-intro-cover__image" />
+        </div>
+      )}
+      <SportsLift room={room} lit={lit} openObject={openPopup?.object ?? null} />
 
       {room.objects.map((o) => {
         const isLit = lit === o.id || hovered === o.id;
@@ -144,7 +144,7 @@ export function Room({ room }: { room: RoomConfig }) {
             aria-label={o.label}
             aria-haspopup="dialog"
             aria-expanded={open === o.popup}
-            style={{ ...boxStyle(o.base), transform: isLit ? hoverTransform(o) : undefined }}
+            style={boxStyle(isLit ? activeBox(o) : o.base)}
             onPointerEnter={(e) => e.pointerType === 'mouse' && enter(o.id)}
             onPointerLeave={(e) => e.pointerType === 'mouse' && leave(o.id)}
             onFocus={(e) => e.currentTarget.matches(':focus-visible') && setFocused(o.id)}
@@ -190,7 +190,7 @@ export function Room({ room }: { room: RoomConfig }) {
             {p.images.map((img) => (
               <Img key={img.asset} room={room.id} asset={img.asset} label={img.alt} className="popup__img" style={boxStyle(img.box)} />
             ))}
-            {overlay && (
+            {overlay && !hasSportsLift(room, p.object) && (
               <Img room={room.id} asset={p.overlay!} label="" className="popup__overlay" style={boxStyle(overlay)} />
             )}
           </section>
@@ -200,8 +200,8 @@ export function Room({ room }: { room: RoomConfig }) {
   );
 }
 
-function Frame({ room, name, sizes, label, visible, held, className = 'frame', style }: {
-  room: string; name: string; sizes: string; label: string; visible: boolean; held?: boolean;
+function Frame({ room, name, sizes, label, visible, className = 'frame', style }: {
+  room: string; name: string; sizes: string; label: string; visible: boolean;
   className?: string; style?: CSSProperties;
 }) {
   const src = assetUrl(room, name);
@@ -216,7 +216,6 @@ function Frame({ room, name, sizes, label, visible, held, className = 'frame', s
       className={className}
       style={style}
       data-visible={visible || undefined}
-      data-held={held || undefined}
       src={src}
       srcSet={sm || x2 ? srcSet : undefined}
       sizes={sm || x2 ? sizes : undefined}

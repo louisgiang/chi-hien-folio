@@ -9,21 +9,63 @@
   position: absolute;
 }
 
-/* Ảnh full-frame: gốc luôn hiện, ảnh hover xếp chồng lên và crossfade 300ms */
+/* Cô lập phép cộng màu trong nhóm ảnh, không trộn với nền trang/pop-up. */
+.room__frames {
+  inset: 0;
+  isolation: isolate;
+  pointer-events: none;
+}
+
+/* Thứ tự lớp cố định; useFrameCrossfade điều khiển opacity cùng một timeline. */
 .frame {
+  position: absolute;
   left: 0;
   top: 0;
   width: 1920px;
   height: 1080px;
   display: block;
   opacity: 0;
-  transition: opacity var(--dur) var(--ease);
+  mix-blend-mode: plus-lighter;
   /* Mỗi ảnh một lớp GPU riêng: đổi độ mờ không phải vẽ lại */
   will-change: opacity;
 }
-.frame[data-visible] { opacity: 1; z-index: 2; }
-/* Ảnh hover cũ giữ nguyên bên dưới khi ảnh mới đang hiện lên */
-.frame[data-held] { opacity: 1; z-index: 1; transition: none; }
+.frame[data-visible] { opacity: 1; }
+
+/* Real object motion: one silhouette moves, rather than two sizes dissolving.
+   Both directions use the browser's interruptible compositor transitions. */
+.sports-lift, .sports-intro-cover {
+  inset: 0;
+  pointer-events: none;
+}
+.sports-lift__plate { position: absolute; inset: 0; z-index: 3; }
+.sports-lift__object {
+  position: absolute;
+  z-index: 3;
+  transform-origin: 0 0;
+  transform: var(--rest-transform);
+  transition: transform 560ms cubic-bezier(.22, .61, .36, 1);
+  will-change: transform;
+}
+.sports-lift__object[data-active] { transform: translate3d(0, 0, 0) scale(1); }
+.sports-lift__object[data-popup] { z-index: 41; }
+.sports-lift__object img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sports-lift__solid { filter: url(#sports-solid-alpha); }
+.sports-lift__glow {
+  opacity: 0;
+  transition: opacity 460ms cubic-bezier(.22, .61, .36, 1);
+  will-change: opacity;
+}
+.sports-lift__object[data-active] .sports-lift__glow { opacity: 1; }
+.sports-lift__key { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sports-lift__key-glow { filter: drop-shadow(0 0 12px rgba(255, 255, 255, .8)); }
+.sports-intro-cover {
+  z-index: 2;
+  clip-path: inset(210px 25px 640px 850px);
+  opacity: 0;
+  transition: opacity 360ms ease;
+}
+.sports-intro-cover[data-active] { opacity: 1; }
+.sports-intro-cover__image { width: 1920px; height: 1080px; display: block; }
 
 /* Ô trong suốt nhận hover/click theo khung layer của đồ vật */
 .hotspot {
@@ -32,8 +74,6 @@
   border: 0;
   background: none;
   cursor: pointer;
-  transform-origin: 0 0;
-  transition: transform var(--dur) var(--ease);
 }
 .hotspot:focus-visible {
   outline: 3px solid #fff;
