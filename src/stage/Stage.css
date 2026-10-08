@@ -30,6 +30,8 @@
 .room-layer {
   position: absolute;
   inset: 0;
+  /* Ảnh .frame dùng plus-lighter: cô lập mỗi màn hình để không cộng sáng lên màn hình cũ khi chuyển */
+  isolation: isolate;
 }
 .room-layer[data-entering] {
   animation: room-in var(--dur) var(--ease) both;

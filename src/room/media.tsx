@@ -8,8 +8,8 @@ export const assetUrl = (room: string, name: string) => ASSETS[`../assets/${room
 export const boxStyle = (b: Box): CSSProperties => ({ left: b.x, top: b.y, width: b.w, height: b.h });
 
 /** Ảnh full-frame 1920×1080, kèm bản -sm (960) và -2x (3840) nếu có. */
-export function Frame({ room, name, sizes, label, visible, held, className = 'frame', style }: {
-  room: string; name: string; sizes: string; label: string; visible: boolean; held?: boolean;
+export function Frame({ room, name, sizes, label, visible, className = 'frame', style }: {
+  room: string; name: string; sizes: string; label: string; visible: boolean;
   className?: string; style?: CSSProperties;
 }) {
   const src = assetUrl(room, name);
@@ -24,7 +24,6 @@ export function Frame({ room, name, sizes, label, visible, held, className = 'fr
       className={className}
       style={style}
       data-visible={visible || undefined}
-      data-held={held || undefined}
       src={src}
       srcSet={sm || x2 ? srcSet : undefined}
       sizes={sm || x2 ? sizes : undefined}

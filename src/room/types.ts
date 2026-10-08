@@ -8,7 +8,7 @@ export type RoomObject = {
   frame: string;
   /** Ô trong suốt nhận hover/click: khung layer ở frame gốc. */
   base: Box;
-  /** Khung layer ở frame hover: ô phóng theo khi đang hover, như vùng hover của Figma. */
+  /** Khung hover: vùng nhận chuột mở rộng bao gồm cả khung gốc và khung này. */
   hover: Box;
   popup: string;
 };

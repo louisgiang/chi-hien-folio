@@ -1,5 +1,49 @@
 # NOTES: Chí Hiển's Folio
 
+## Chìa khóa chuyển động liên tục — bản local tiếp theo
+
+- Giữ nguyên chuyển động đã duyệt của vợt/giày. Chìa khóa (id nội bộ vẫn là
+  `whistle`) nay dùng cùng transform 560ms và glow opacity 460ms.
+- Repo không có sprite chìa khóa riêng. `SportsKey.tsx` dùng SVG clipPath
+  lấy đúng phần chìa khóa trong ảnh gốc 2x, giữ ổ khóa cam ở vị trí cũ.
+  Chỉ phần nền bị chìa khóa cũ che được phục dựng bằng các mảng màu SVG.
+- Không crossfade frame hover chìa khóa nữa. Khi mở Swimming, chìa khóa
+  vẫn nằm dưới thẻ kính; vợt/giày vẫn nằm trên thẻ kính của chúng.
+- Test kiểm tra chuyển động của cả ba món, đổi chiều giữa chừng, không có
+  ảnh hover lớn chồng lên, hit area, pop-up, chạm và transition duration 0.
+
+## Chuyển động nổi lên mềm hơn — bản local tiếp theo
+
+- Vợt và giày không còn hòa trộn hai ảnh full-frame có kích thước khác nhau.
+  `SportsLift.tsx` dùng đúng hai sprite xuất từ Figma sẵn trong repo, chuyển
+  transform liên tục 560ms với easing `cubic-bezier(.22,.61,.36,1)`.
+- Tách quầng sáng trắng bằng SVG filter; ảnh thân đồ vật luôn hiện, quầng sáng
+  đổi opacity trong 460ms. Không đổi transform của vùng nhận chuột.
+- Dựng lại các mảng nền xanh phẳng sau vợt/giày bằng bốn polygon SVG; những
+  phần minh họa còn lại dùng ảnh gốc. Đây là phần nền được tái dựng, không phải
+  một bản export nền riêng từ Figma.
+- Ảnh có nội dung giới thiệu được che bằng đúng vùng tương ứng của frame
+  không có giới thiệu. Cái còi tiếp tục dùng crossfade; hai frame hover vợt/giày
+  luôn có opacity 0 nên không thể xuất hiện viền đồ vật thứ hai.
+- Pop-up dùng lại sprite đang chuyển động ở lớp trên, không thêm bản sao
+  lớn ngay khi click. Reduced motion vẫn dùng quy tắc CSS chung.
+
+## Sửa hover bị giật (2026-10-08)
+
+Phần này thay thế mô tả xếp lớp/`data-held` ở mục “Làm mượt chuyển động” bên dưới.
+
+- Lỗi cũ: ảnh gốc có `z-index: 2`, ảnh hover khi rời chuột mất z-index,
+  còn ảnh `data-held` chỉ có `z-index: 1`. Cả hai bị ảnh gốc che ngay lập tức.
+- Nhóm ảnh nay có thứ tự cố định, cô lập với pop-up. `plus-lighter` cộng các
+  trọng số opacity; tổng luôn bằng 1 để không lóe nền/đổi độ sáng giữa hai hover.
+- `useFrameCrossfade` lấy opacity đang hiển thị trước khi hủy animation cũ,
+  rồi chạy tất cả ảnh trên cùng timeline, giữ 300ms/ease-out từ CSS. Đổi hướng
+  giữa chừng vẫn tiếp tục từ hình đang thấy, không ép ảnh cũ về opacity 1.
+- Bỏ timer giữ ảnh 300ms; giữ grace 80ms khi rời đồ vật. Vùng nhận chuột mở
+  rộng bao cả khung gốc và khung hover, không chạy transform theo animation.
+- Tôn trọng reduced motion, kể cả khi đổi tùy chọn lúc animation đang chạy.
+- Kiểm thử trình duyệt: xem `tests/README.md`.
+
 Figma file `93v05w3au1CsDYzL4cAPWX`, Page 1 (`0:1`). Đọc ngày 2026-10-08.
 
 ## 0. Quyết định đã duyệt (2026-10-08)
