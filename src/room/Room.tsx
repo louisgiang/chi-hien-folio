@@ -1,12 +1,9 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { STAGE_H, STAGE_W, useStageScale } from '../stage/Stage';
+import { boxStyle, CompactPanel, Frame, Glass, Img } from './media';
 import type { Box, Popup, RoomConfig, RoomObject } from './types';
 import './Room.css';
-
-// Ảnh chuyển từ figma-export/ bằng scripts/convert-export.mjs. Thiếu file thì hiện khung giữ chỗ.
-const ASSETS = import.meta.glob<string>('../assets/**/*.webp', { eager: true, import: 'default' });
-const assetUrl = (room: string, name: string) => ASSETS[`../assets/${room}/${name}.webp`];
 
 // Cỡ chữ nội dung pop-up trên sân khấu; nếu sau khi co giãn < 12px thì
 // chuyển pop-up sang chế độ gần toàn màn hình, cuộn được.
@@ -16,7 +13,6 @@ const MIN_READABLE = 12;
 const CROSSFADE_MS = 300;
 const LEAVE_GRACE_MS = 80;
 
-const boxStyle = (b: Box): CSSProperties => ({ left: b.x, top: b.y, width: b.w, height: b.h });
 // Ảnh vượt mép dưới frame: chỉ phần trong frame là nhìn thấy. Figma có thể cắt sẵn khi xuất;
 // cắt khung theo mép frame + object-fit: cover (neo trên) để ảnh cắt hay nguyên đều không méo.
 const clipToStage = (b: Box): Box => ({ ...b, h: Math.min(b.h, STAGE_H - b.y) });
@@ -173,7 +169,6 @@ export function Room({ room }: { room: RoomConfig }) {
         }
         const overlay = p.overlay && room.overlays?.[p.overlay];
         const blur = `${room.objects.find((o) => o.id === p.object)!.frame}-blur`;
-        const hasBlur = !!assetUrl(room.id, blur);
         return (
           <section
             key={p.id}
@@ -187,13 +182,7 @@ export function Room({ room }: { room: RoomConfig }) {
             tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Nền mờ dựng sẵn, cắt đúng khung thẻ; thiếu ảnh thì quay về backdrop-filter */}
-            <div className="glass" data-live={!hasBlur || undefined} style={boxStyle(p.glass)}>
-              {hasBlur && (
-                <Frame room={room.id} name={blur} sizes={sizes} label="" visible className="glass__bg"
-                  style={{ left: `calc(${-p.glass.x}px - var(--glass-border))`, top: `calc(${-p.glass.y}px - var(--glass-border))` }} />
-              )}
-            </div>
+            <Glass room={room.id} blur={blur} box={p.glass} sizes={sizes} />
             <h2 id={`${p.id}-title`} className="popup__title" style={boxStyle(p.title.box)}>{p.title.text}</h2>
             {p.texts.map((t, i) => (
               <p key={i} className="popup__body" style={boxStyle(t.box)}>{t.text}</p>
@@ -211,67 +200,19 @@ export function Room({ room }: { room: RoomConfig }) {
   );
 }
 
-function Frame({ room, name, sizes, label, visible, held, className = 'frame', style }: {
-  room: string; name: string; sizes: string; label: string; visible: boolean; held?: boolean;
-  className?: string; style?: CSSProperties;
-}) {
-  const src = assetUrl(room, name);
-  const sm = assetUrl(room, `${name}-sm`);
-  const x2 = assetUrl(room, `${name}-2x`);
-  if (!src) {
-    return <span className={`${className} placeholder`} data-visible={visible || undefined}>{label}<small>{name}.webp</small></span>;
-  }
-  const srcSet = [sm && `${sm} 960w`, `${src} 1920w`, x2 && `${x2} 3840w`].filter(Boolean).join(', ');
-  return (
-    <img
-      className={className}
-      style={style}
-      data-visible={visible || undefined}
-      data-held={held || undefined}
-      src={src}
-      srcSet={sm || x2 ? srcSet : undefined}
-      sizes={sm || x2 ? sizes : undefined}
-      alt=""
-      draggable={false}
-      decoding="async"
-    />
-  );
-}
-
 function CompactPopup({ room, popup, panelRef, onClose }: {
   room: string; popup: Popup; panelRef: (el: HTMLElement | null) => void; onClose: () => void;
 }) {
   return (
-    <div className="popup-compact" onClick={onClose}>
-      <section
-        ref={panelRef}
-        className="popup-compact__panel glass"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={`${popup.id}-title-c`}
-        tabIndex={-1}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button type="button" className="popup-compact__close" aria-label="Đóng" onClick={onClose}>×</button>
-        <h2 id={`${popup.id}-title-c`} className="popup__title">{popup.title.text}</h2>
-        {popup.texts.map((t, i) => <p key={i} className="popup__body">{t.text}</p>)}
-        <div className="popup-compact__imgs">
-          {popup.images.map((img) => (
-            <Img key={img.asset} room={room} asset={img.asset} label={img.alt} className="popup__img"
-              style={{ aspectRatio: `${img.box.w} / ${clipToStage(img.box).h}` }} />
-          ))}
-        </div>
-      </section>
-    </div>
+    <CompactPanel labelledBy={`${popup.id}-title-c`} panelRef={panelRef} onClose={onClose}>
+      <h2 id={`${popup.id}-title-c`} className="popup__title">{popup.title.text}</h2>
+      {popup.texts.map((t, i) => <p key={i} className="popup__body">{t.text}</p>)}
+      <div className="popup-compact__imgs">
+        {popup.images.map((img) => (
+          <Img key={img.asset} room={room} asset={img.asset} label={img.alt} className="popup__img"
+            style={{ aspectRatio: `${img.box.w} / ${clipToStage(img.box).h}` }} />
+        ))}
+      </div>
+    </CompactPanel>
   );
-}
-
-function Img({ room, asset, label, className, style }: {
-  room: string; asset: string; label: string; className?: string; style?: CSSProperties;
-}) {
-  const src = assetUrl(room, asset);
-  if (!src) {
-    return <span className={`placeholder ${className ?? ''}`} style={style}>{label}<small>{asset}.webp</small></span>;
-  }
-  return <img src={src} alt={label} className={className} style={style} draggable={false} decoding="async" />;
 }

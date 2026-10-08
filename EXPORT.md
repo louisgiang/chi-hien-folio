@@ -109,6 +109,17 @@ Nhiều pop-up đều có layer tên `image 1` / `image 2`: tìm theo ID cho kh�
 
 ---
 
+## Trang chủ → `figma-export/home/`
+
+| Frame / layer | Tên file | Lưu ý |
+|---|---|---|
+| Frame `25:44` | `home-base.png` | PNG 2x, cả frame |
+| `image 18` (25:87) trong frame `25:76` | `about-photo.png` | PNG 2x. ⚠ **Tắt effect Drop shadow** của layer trước khi xuất (bấm con mắt cạnh effect ở panel bên phải), mình dựng bóng bằng code. Xuất xong bật lại |
+
+Ảnh đối chiếu (rất cần, để đo font và cỡ chữ của thẻ, tiêu đề "How to Play" và 4 tên phòng): `25:76`, `25:103`, `25:126` → `figma-export/home/ref/`.
+
+---
+
 ## Ảnh đối chiếu pop-up (nên có): `figma-export/<phòng>/ref/`
 
 Không đưa vào web, chỉ để mình so bố cục và chữ như đã làm với Sports. Xuất cả frame PNG 2x, đặt tên theo ID (`6-117.png`, …):

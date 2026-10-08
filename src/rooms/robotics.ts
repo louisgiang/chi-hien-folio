@@ -1,3 +1,4 @@
+import { navLinks } from '../room/nav';
 import type { RoomConfig } from '../room/types';
 
 // Phòng Robotics. Frame gốc 6:28; hover 6:52 / 6:68 / 6:84; pop-up 6:117 / 6:212 / 6:237.
@@ -8,8 +9,8 @@ export const robotics: RoomConfig = {
   id: 'robotics',
   name: 'Robotics',
   base: 'robotics-base',
-  // Prototype: chữ "Sports" (6:36) trên menu, click → 1:7.
-  links: [{ label: 'Sports', box: { x: 1363, y: 25, w: 74, h: 27 }, to: '#/sports' }],
+  // Menu: prototype có Sports (6:36) → 1:7; các mục khác nối theo quyết định 2026-10-08.
+  links: navLinks('robotics'),
   objects: [
     {
       id: 'gart',

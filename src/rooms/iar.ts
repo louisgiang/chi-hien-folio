@@ -1,3 +1,4 @@
+import { navLinks } from '../room/nav';
 import type { RoomConfig } from '../room/types';
 
 // Phòng Innovation & Research. Frame gốc 32:475 (đã duyệt, bỏ 33:2 / 33:17).
@@ -10,6 +11,7 @@ export const iar: RoomConfig = {
   id: 'iar',
   name: 'Innovation and Research',
   base: 'iar-base',
+  links: navLinks('iar'),
   objects: [
     {
       id: 'posters',

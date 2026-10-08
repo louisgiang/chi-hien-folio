@@ -184,3 +184,22 @@ Gốc `25:44` · About Me `25:76` · How to Play `25:103` · Select the Memory `
 - **Text rời ngoài frame** (35:244 "Vietnam Signature…", 35:249 "VEX V5 … National Championship…") có thể là nội dung dành cho pop-up Competitions. Chưa dùng.
 - **Chờ nội dung chữ đầy đủ:** Robotics (6 đoạn), Community (7 đoạn + 4 tiêu đề đang bị cắt, tiêu đề Cerebral Palsy 2 dòng), IAR (4 đoạn). Đang đánh dấu `[chờ nội dung]`.
 - **Trang chủ chưa dựng**, chờ quyết định có nối menu hay không. Hiện mặc định vào Sports (Flow 1).
+
+## 5. Trang chủ và menu (2026-10-08, đã duyệt)
+
+- **Trang chủ** (`src/home/`) là trang mở mặc định:
+  - Menu About Me / Select the Memory / How to Play là ô trong suốt đặt lên ảnh `25:44`.
+  - Bấm vào thì hiện thẻ kính của `25:76` / `25:126` / `25:103`. Thẻ dựng bằng code, chữ thật, mờ dần 300ms.
+  - Esc hoặc click ra ngoài thì đóng. Bấm mục menu khác thì chuyển thẻ.
+- **Select the Memory:** 4 tên phòng là liên kết thật, dẫn vào phòng tương ứng.
+- **Đường dẫn:** `#/` (trang chủ), `#/about`, `#/howto`, `#/select` (trang chủ mở sẵn thẻ), `#/sports`, `#/robotics`, `#/community`, `#/iar`.
+- **Menu trong phòng** (`src/room/nav.ts`):
+  - Logo về trang chủ. About Me và How to Play về trang chủ và mở sẵn thẻ tương ứng.
+  - Tên phòng dẫn sang phòng đó. Mục của phòng hiện tại không có liên kết.
+  - Đổi màn hình mờ dần 300ms.
+- **Không làm chuyển động** cho D-pad / phím mũi tên (brief, quy tắc 5).
+- **Đang đoán, chờ ảnh đối chiếu `25:76` / `25:103` / `25:126`:**
+  - Cỡ chữ tiêu đề "How to Play" (96px trong khung 107px).
+  - 4 tên phòng: Oswald 72px, bóng cứng #cc6b24 lệch 4px.
+  - Bóng của thẻ: 0 4px 4px đen 25%.
+- **Lệch nhỏ trong Figma:** ở `25:126`, khung máy game (Rectangle 2) nằm ở y = 118 thay vì 115 và tiêu đề lệch 2px. Mình dùng chung ảnh `25:44` cho mọi thẻ nên bỏ qua.

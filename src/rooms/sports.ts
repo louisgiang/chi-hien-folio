@@ -1,3 +1,4 @@
+import { navLinks } from '../room/nav';
 import type { RoomConfig } from '../room/types';
 import overlays from '../assets/sports/overlays.json';
 
@@ -10,8 +11,8 @@ export const sports: RoomConfig = {
   name: 'Sports',
   base: 'sports-base',
   overlays,
-  // Prototype: chữ "Robotics" (1:13) trên menu, click → 6:28.
-  links: [{ label: 'Robotics', box: { x: 947, y: 25, w: 93, h: 27 }, to: '#/robotics' }],
+  // Menu: prototype có Robotics (1:13) → 6:28; các mục khác nối theo quyết định 2026-10-08.
+  links: navLinks('sports'),
   objects: [
     {
       id: 'racket',

@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Stage } from './stage/Stage';
 import { PortraitHint } from './stage/PortraitHint';
 import { Room } from './room/Room';
+import { Home } from './home/Home';
+import type { HomePanelId } from './home/homeConfig';
 import { sports } from './rooms/sports';
 import { robotics } from './rooms/robotics';
 import { community } from './rooms/community';
@@ -9,29 +11,39 @@ import { iar } from './rooms/iar';
 import type { RoomConfig } from './room/types';
 
 // Định tuyến bằng hash để build tĩnh chạy được ở mọi host.
-// Trang chủ chưa dựng (chờ quyết định, xem NOTES.md); mặc định vào Sports (Flow 1 của prototype).
+//   #/                      trang chủ
+//   #/about #/howto #/select  trang chủ, mở sẵn thẻ tương ứng
+//   #/sports #/robotics #/community #/iar  các phòng
 const ROOMS: Record<string, RoomConfig> = { sports, robotics, community, iar };
-const DEFAULT_ROOM = 'sports';
-// Khớp với --dur trong styles.css (Smart Animate 300ms giữa hai phòng).
-const ROOM_FADE_MS = 300;
+const HOME_PANELS: HomePanelId[] = ['about', 'howto', 'select'];
+// Khớp với --dur trong styles.css (Smart Animate 300ms giữa hai màn hình).
+const PAGE_FADE_MS = 300;
 
-const readRoute = () => {
+type Route = { page: string; panel: HomePanelId | null };
+
+const readRoute = (): Route => {
   const id = location.hash.replace(/^#\/?/, '');
-  return id in ROOMS ? id : DEFAULT_ROOM;
+  if (id in ROOMS) return { page: id, panel: null };
+  return { page: 'home', panel: HOME_PANELS.includes(id as HomePanelId) ? (id as HomePanelId) : null };
 };
+
+function Page({ page, panel }: Route) {
+  return page === 'home' ? <Home panel={panel} /> : <Room room={ROOMS[page]} />;
+}
 
 export default function App() {
   const [route, setRoute] = useState(readRoute);
-  // Phòng cũ còn nằm bên dưới trong lúc phòng mới mờ dần vào.
+  // Màn hình cũ còn nằm bên dưới trong lúc màn hình mới mờ dần vào.
   const [leaving, setLeaving] = useState<string | null>(null);
-  const current = useRef(route);
+  const current = useRef(route.page);
 
   useEffect(() => {
     const onHash = () => {
       const next = readRoute();
-      if (next === current.current) return;
-      setLeaving(current.current);
-      current.current = next;
+      if (next.page !== current.current) {
+        setLeaving(current.current);
+        current.current = next.page;
+      }
       setRoute(next);
     };
     window.addEventListener('hashchange', onHash);
@@ -40,20 +52,20 @@ export default function App() {
 
   useEffect(() => {
     if (!leaving) return;
-    const t = setTimeout(() => setLeaving(null), ROOM_FADE_MS);
+    const t = setTimeout(() => setLeaving(null), PAGE_FADE_MS);
     return () => clearTimeout(t);
-  }, [leaving, route]);
+  }, [leaving, route.page]);
 
   return (
     <>
       <Stage>
-        {leaving && leaving !== route && (
-          <div key={leaving} className="room-layer" data-leaving inert>
-            <Room room={ROOMS[leaving]} />
+        {leaving && leaving !== route.page && (
+          <div key={leaving} className="room-layer" inert>
+            <Page page={leaving} panel={null} />
           </div>
         )}
-        <div key={route} className="room-layer" data-entering={leaving ? true : undefined}>
-          <Room room={ROOMS[route]} />
+        <div key={route.page} className="room-layer" data-entering={leaving ? true : undefined}>
+          <Page {...route} />
         </div>
       </Stage>
       <PortraitHint />

@@ -1,3 +1,4 @@
+import { navLinks } from '../room/nav';
 import type { RoomConfig } from '../room/types';
 
 // Phòng Community Services. Frame gốc 25:170. 7 đồ vật đều tên "Không Có Tiêu Đề…",
@@ -15,6 +16,7 @@ export const community: RoomConfig = {
   id: 'community',
   name: 'Community Services',
   base: 'community-base',
+  links: navLinks('community'),
   objects: [
     obj('zerodong', '"Zero-Dong" Charity Fair', [493, 64, 306, 214], [467, 46, 358, 250]),
     obj('racetrack', '"Blue Racetrack" Swimming', [912, 186, 181, 59], [863, 170, 279, 91]),

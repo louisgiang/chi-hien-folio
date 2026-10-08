@@ -53,6 +53,13 @@ const ROOMS = {
       'community-hover-advisor': { x: 1099, y: 644, w: 338, h: 225, glow: 40 },
     },
   },
+  // Trang chủ: không có hover; thẻ kính nằm trên ảnh gốc nên cần ảnh mờ của chính ảnh gốc.
+  home: {
+    frames: ['home-base'],
+    blurFrames: ['home-base'],
+    photos: ['about-photo'],
+    overlays: [],
+  },
   iar: {
     frames: ['iar-base', 'iar-hover-posters', 'iar-hover-column', 'iar-hover-laptop', 'iar-hover-robot'],
     photos: ['tekmonk-1', 'tekmonk-2', 'wico-1', 'wico-2', 'other-1', 'other-2', 'vsic-1', 'vsic-2'],
@@ -168,7 +175,7 @@ for (const f of cfg.frames) {
 // sigma 8 ở 1920 (GLASS radius 15 của Figma ≈ 2 × sigma), không đổi độ bão hòa,
 // phủ trắng 10% làm ở CSS (.glass::after). Sai khác trung bình 1,74/255.
 const GLASS_SIGMA = 8;
-for (const f of cfg.frames.filter((n) => n !== cfg.frames[0])) {
+for (const f of cfg.blurFrames ?? cfg.frames.filter((n) => n !== cfg.frames[0])) {
   for (const [suffix, width] of [['', STAGE_W], ['-sm', STAGE_W / 2]]) {
     const out = `${f}-blur${suffix}`;
     const info = await sharp(png(f))

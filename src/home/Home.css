@@ -1,0 +1,65 @@
+/* Thẻ trang chủ: thẻ kính có thêm DROP_SHADOW 4px đen 25% (offset 0,4 theo mặc định Figma: đang đoán) */
+.home-panel__glass {
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Lớp chứa 4 liên kết phủ cả sân khấu: không được chặn click "ra ngoài" */
+.popup[data-open].home-panel > nav,
+.home-panel > nav {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.home-panel__photo {
+  object-fit: cover;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+/* Tiêu đề "How to Play": khung cao 107px, cỡ chữ đang đoán, chờ ảnh đối chiếu 25:103 */
+.home-panel__title {
+  font-size: 96px;
+  line-height: 107px;
+  margin: 0;
+}
+
+/* Bốn tên phòng: chữ thật, bóng cứng #cc6b24 (radius 0; độ lệch đang đoán) */
+.home-option {
+  position: absolute;
+  pointer-events: auto;
+  font-family: var(--font-popup-title);
+  font-size: 72px;
+  line-height: 87px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 4px 4px 0 #cc6b24;
+}
+.home-option:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Dạng thu gọn trên điện thoại */
+.home-panel__photo-c {
+  display: block;
+  width: min(100%, 320px);
+  height: auto;
+  margin: 0 auto 16px;
+  object-fit: cover;
+}
+.home-options-c {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+.home-options-c .home-option {
+  position: static;
+  font-size: 32px;
+  line-height: 1.2;
+  white-space: normal;
+  text-shadow: 2px 2px 0 #cc6b24;
+}
