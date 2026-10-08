@@ -210,3 +210,11 @@ Gốc `25:44` · About Me `25:76` · How to Play `25:103` · Select the Memory `
 - **Lưu ý:** Bahiana bản Google Fonts trên web hẹp hơn chữ trong ảnh xuất từ Figma khoảng 1,5 lần (BADMINTON: 163px so với 243,5px). Nếu nhìn trên web thấy tiêu đề mảnh hơn Figma, nên kiểm tra trong Figma:
   - Có cảnh báo "Missing fonts" không.
   - Layer tiêu đề có letter spacing hoặc font khác không.
+
+## 7. Lấp viền và màn hình chưa có ảnh (2026-10-08)
+
+- **Lỗi đã sửa:** lần đẩy trước đặt trang chủ làm trang mở mặc định khi chưa có ảnh trang chủ, nên bản trên Vercel chỉ hiện khung giữ chỗ.
+- **Cách sửa:** màn hình chỉ hiện cho người xem khi đã có ảnh gốc (`isReady` trong `App.tsx`). Chưa có thì chuyển về Sports và đổi thanh địa chỉ thành `#/sports`. Xuất ảnh xong thì màn hình đó tự bật, không cần sửa code.
+- **Lấp viền (cách A, đã duyệt):** khi khung trình duyệt không đúng 16:9, phần thừa được lấp bằng ảnh gốc của màn hình hiện tại:
+  - Bản `-sm`, phóng kín khung, `blur(40px) brightness(0.55) saturate(1.1)`.
+  - Ảnh tĩnh, mờ dần 300ms khi đổi màn hình.

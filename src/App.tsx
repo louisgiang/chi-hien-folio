@@ -3,7 +3,8 @@ import { Stage } from './stage/Stage';
 import { PortraitHint } from './stage/PortraitHint';
 import { Room } from './room/Room';
 import { Home } from './home/Home';
-import type { HomePanelId } from './home/homeConfig';
+import { home, type HomePanelId } from './home/homeConfig';
+import { assetUrl } from './room/media';
 import { sports } from './rooms/sports';
 import { robotics } from './rooms/robotics';
 import { community } from './rooms/community';
@@ -21,11 +22,26 @@ const PAGE_FADE_MS = 300;
 
 type Route = { page: string; panel: HomePanelId | null };
 
+// Ảnh gốc (full-frame) của từng màn hình.
+const baseOf = (page: string) => (page === 'home' ? home.base : ROOMS[page].base);
+// Màn hình chỉ hiện cho người xem khi đã có ảnh gốc; chưa có thì chuyển về phòng dự phòng,
+// để bản triển khai không bao giờ hiện khung giữ chỗ. Xuất ảnh xong là màn hình tự bật.
+const isReady = (page: string) => !!assetUrl(page, baseOf(page));
+const FALLBACK = 'sports';
+
 const readRoute = (): Route => {
   const id = location.hash.replace(/^#\/?/, '');
-  if (id in ROOMS) return { page: id, panel: null };
-  return { page: 'home', panel: HOME_PANELS.includes(id as HomePanelId) ? (id as HomePanelId) : null };
+  const want: Route = id in ROOMS
+    ? { page: id, panel: null }
+    : { page: 'home', panel: HOME_PANELS.includes(id as HomePanelId) ? (id as HomePanelId) : null };
+  if (isReady(want.page)) return want;
+  // Đồng bộ thanh địa chỉ với màn hình đang hiện (không thêm mục vào lịch sử).
+  history.replaceState(null, '', `#/${FALLBACK}`);
+  return { page: FALLBACK, panel: null };
 };
+
+// Nền mờ lấp phần thừa hai bên (hoặc trên dưới) khi khung trình duyệt không đúng 16:9.
+const backdropOf = (page: string) => assetUrl(page, `${baseOf(page)}-sm`) ?? assetUrl(page, baseOf(page));
 
 function Page({ page, panel }: Route) {
   return page === 'home' ? <Home panel={panel} /> : <Room room={ROOMS[page]} />;
@@ -58,7 +74,7 @@ export default function App() {
 
   return (
     <>
-      <Stage>
+      <Stage backdrop={backdropOf(route.page)}>
         {leaving && leaving !== route.page && (
           <div key={leaving} className="room-layer" inert>
             <Page page={leaving} panel={null} />

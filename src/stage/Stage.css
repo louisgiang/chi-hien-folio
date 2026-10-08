@@ -5,6 +5,19 @@
   background: var(--letterbox);
 }
 
+/* Lấp phần thừa ngoài khung 16:9 bằng chính cảnh đó, phóng kín, mờ và tối (cách A, đã duyệt).
+   Ảnh tĩnh, không chuyển động: bộ lọc chỉ vẽ một lần. Đổi màn hình thì mờ dần 300ms. */
+.backdrop {
+  position: absolute;
+  inset: -60px; /* tràn ra ngoài để mép ảnh mờ không lộ viền sáng */
+  width: calc(100% + 120px);
+  height: calc(100% + 120px);
+  object-fit: cover;
+  filter: blur(40px) brightness(0.55) saturate(1.1);
+  animation: room-in var(--dur) var(--ease) both;
+  pointer-events: none;
+}
+
 .stage {
   position: absolute;
   left: 50%;
