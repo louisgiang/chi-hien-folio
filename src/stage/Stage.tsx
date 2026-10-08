@@ -33,7 +33,10 @@ export function Stage({ children, backdrop }: { children: ReactNode; backdrop?: 
   return (
     <ScaleContext.Provider value={scale}>
       <div className="viewport">
-        {backdrop && <img key={backdrop} className="backdrop" src={backdrop} alt="" aria-hidden="true" draggable={false} />}
+        {backdrop && (
+          <img key={backdrop} className="backdrop" src={backdrop} alt="" aria-hidden="true" draggable={false}
+            onLoad={(e) => (e.currentTarget.dataset.loaded = '')} />
+        )}
         <div
           className="stage"
           style={{ width: STAGE_W, height: STAGE_H, transform: `translate(-50%, -50%) scale(${scale})` }}

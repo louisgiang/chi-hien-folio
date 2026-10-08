@@ -262,3 +262,12 @@ Gốc `25:44` · About Me `25:76` · How to Play `25:103` · Select the Memory `
 - **Lấp viền (cách A, đã duyệt):** khi khung trình duyệt không đúng 16:9, phần thừa được lấp bằng ảnh gốc của màn hình hiện tại:
   - Bản `-sm`, phóng kín khung, `blur(40px) brightness(0.55) saturate(1.1)`.
   - Ảnh tĩnh, mờ dần 300ms khi đổi màn hình.
+
+## 8. Nháy khi mở trang (2026-10-08)
+
+- **Hiện tượng:** mở trang Vercel thì khung vợt và giày nháy lên vài lần rất nhanh.
+- **Nguyên nhân:** các lớp của phòng Sports xuất hiện ở các thời điểm khác nhau. Nền SVG (inline) hiện ngay, sprite vợt/giày tải xong sau, ảnh toàn cảnh tải xong sau nữa.
+- **Cách sửa:**
+  - `useImagesReady` chờ mọi `<img>` (và `<image>` trong SVG) tải và giải mã xong, giới hạn chờ tối đa 4 giây. Sau đó phòng/trang chủ mới hiện bằng một lần mờ dần 300ms (`.room[data-ready]`).
+  - Nền mờ hai bên chỉ hiện khi ảnh đã tải (`onLoad`).
+  - Hiệu ứng hover không đổi.

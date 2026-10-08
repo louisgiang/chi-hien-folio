@@ -4,6 +4,7 @@ import { STAGE_H, STAGE_W, useStageScale } from '../stage/Stage';
 import { boxStyle, CompactPanel, Frame, Glass, Img } from './media';
 import type { Box, Popup, RoomConfig, RoomObject } from './types';
 import { useFrameCrossfade } from './useFrameCrossfade';
+import { useImagesReady } from './useImagesReady';
 import { hasSportsLift, SportsLift } from './SportsLift';
 import './Room.css';
 
@@ -103,11 +104,10 @@ export function Room({ room }: { room: RoomConfig }) {
   // Sports objects move as separate layers; never fade in their enlarged frames.
   useFrameCrossfade(framesRef, hasSportsLift(room, lit) ? 0 : room.objects.findIndex((o) => o.id === lit) + 1);
 
-  // Giải mã sẵn mọi ảnh khi vào phòng, để lần hover đầu tiên không bị khựng.
+  // Giải mã sẵn mọi ảnh rồi mới hiện phòng (mờ dần một lần): tránh nháy khi mở trang
+  // và lần hover đầu tiên không bị khựng.
   const roomRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    roomRef.current?.querySelectorAll('img').forEach((img) => void img.decode().catch(() => {}));
-  }, []);
+  const ready = useImagesReady(roomRef);
   // Ảnh frame thường hiển thị ở khoảng 1920 × scale px; trình duyệt tự tính thêm mật độ điểm ảnh.
   const sizes = `${Math.ceil(STAGE_W * scale)}px`;
 
@@ -115,6 +115,7 @@ export function Room({ room }: { room: RoomConfig }) {
     <div
       ref={roomRef}
       className="room"
+      data-ready={ready || undefined}
       onPointerDownCapture={(e) => (pointerType.current = e.pointerType)}
       onClick={onBackgroundClick}
     >

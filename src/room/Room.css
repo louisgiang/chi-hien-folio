@@ -2,7 +2,11 @@
   position: absolute;
   inset: 0;
   user-select: none;
+  /* Ẩn tới khi mọi ảnh đã giải mã (useImagesReady), rồi hiện bằng một lần mờ dần */
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
 }
+.room[data-ready] { opacity: 1; }
 
 .room > *,
 .popup > * {

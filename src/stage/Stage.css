@@ -14,9 +14,12 @@
   height: calc(100% + 120px);
   object-fit: cover;
   filter: blur(40px) brightness(0.55) saturate(1.1);
-  animation: room-in var(--dur) var(--ease) both;
   pointer-events: none;
+  /* Chỉ hiện khi ảnh đã tải xong (onLoad), để không bật lên giữa chừng */
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
 }
+.backdrop[data-loaded] { opacity: 1; }
 
 .stage {
   position: absolute;

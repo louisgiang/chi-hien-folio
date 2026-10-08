@@ -2,6 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { STAGE_W, useStageScale } from '../stage/Stage';
 import { boxStyle, CompactPanel, Frame, Glass, Img } from '../room/media';
+import { useImagesReady } from '../room/useImagesReady';
 import { home, type HomePanelId } from './homeConfig';
 import '../room/Room.css';
 import './Home.css';
@@ -18,6 +19,9 @@ export function Home({ panel }: { panel: HomePanelId | null }) {
   const compact = BODY_FONT * scale < MIN_READABLE;
   const sizes = `${Math.ceil(STAGE_W * scale)}px`;
   const panels = useRef(new Map<string, HTMLElement>());
+  // Như phòng: chờ ảnh giải mã xong mới hiện, tránh nháy khi mở trang.
+  const rootRef = useRef<HTMLDivElement>(null);
+  const ready = useImagesReady(rootRef);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -61,7 +65,7 @@ export function Home({ panel }: { panel: HomePanelId | null }) {
 
   const { about, howto, select } = home;
   return (
-    <div className="room" onClick={close}>
+    <div ref={rootRef} className="room" data-ready={ready || undefined} onClick={close}>
       <Frame room={home.id} name={home.base} sizes={sizes} label="Trang chủ" visible />
 
       {home.menu.map((m) => (
