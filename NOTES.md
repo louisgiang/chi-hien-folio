@@ -1,5 +1,34 @@
 # NOTES: Chí Hiển's Folio
 
+## Innovation & Research (IAR) — hoàn thành (2026-10-09)
+
+- **Chữ 4 pop-up** chép nguyên văn người dùng gửi (lưu `figma-export/iar/text.md`), đối chiếu 4 ref.
+- **Other research**: 2 khối, mỗi khối tiêu đề **gạch chân** + 1 câu (dùng `heading`+`underline`).
+  Tiêu đề: "Research at Hanoi University of Science and Technology" / "Research at 13th Vietnam
+  Summer School of Science".
+- **Sửa lỗi vị trí ảnh** (đo lại từ ref):
+  - `wico-2` (huy chương + Gold Award): {x:1120,y:750,w:302,h:445} dọc-dưới →
+    **{x:1128,y:446,w:408,h:293}** ngang bên phải ảnh booth (ref 33-77). Nới thẻ kính WICO
+    rộng khớp ref: w 1120 → **1215**.
+  - `other`: cert (`other-2`) bên TRÁI {x:86,y:398,w:466,h:312}, ảnh nhóm (`other-1`) bên PHẢI
+    {x:571,y:398,w:442,h:312} — cạnh nhau (ref 33-97). Trước đây đặt sai (one x:570, one x:85 y:720).
+    Lưu ý: `other-1` = ảnh nhóm, `other-2` = giấy chứng nhận (ngược mô tả cũ ở EXPORT.md).
+  - tekmonk, vsic: 2 ảnh cạnh nhau, khung phiên trước đã khớp ref (giữ nguyên).
+- Base + hover 4 đồ vật chạy đúng (crossfade sang đúng frame); 4 hotspot + 6 nav; không placeholder.
+
+### Vấn đề đã biết của IAR (cần bạn quyết)
+1. **Cột đo nước giữ khung giới thiệu khi hover/mở WICO**: ảnh hover cột là ghép từ `iar-base`
+   (có intro), Figma không có frame sạch. Nên khi mở WICO, khung giới thiệu top-left vẫn hiện
+   (các hover khác thì ẩn). `npm run assets` cảnh báo điều này — đã biết, chấp nhận trừ khi muốn xử lý.
+2. **"here" trong Other research** là link gạch chân trong thiết kế, hiện **render chữ thường**
+   (chưa có URL, chưa hỗ trợ gạch chân inline). Tiêu đề thì đã gạch chân. Có thể thêm nếu bạn muốn.
+3. **base `32:475` vs hover `33:x` lệch nhẹ ở viền** (cảnh báo `npm run assets`: posters 1921đ,
+   robot 2560đ, laptop 81đ ngoài vùng object): hai "họ" frame vẽ hơi khác (đường viền vàng-lục của
+   base), có thể gây nhấp nháy rất nhẹ khi crossfade. Cosmetic. Nếu cần sạch tuyệt đối, xuất lại
+   base + 3 hover từ cùng một bản Figma.
+4. **WICO ↔ cột đo nước là phỏng đoán** (pop-up WICO 33:77 trong Figma không có đồ vật nào sáng;
+   đoán theo nội dung "water testing device"). Xem mục cũ bên dưới.
+
 ## Community Services — hoàn thành (2026-10-09)
 
 - **Chữ 7 pop-up**: chép nguyên văn người dùng gửi trong chat (lưu `figma-export/community/text.md`),

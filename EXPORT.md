@@ -80,7 +80,7 @@ Nhiều pop-up đều có layer tên `image 1` / `image 2`: tìm theo ID cho kh�
 
 ---
 
-## Innovation & Research → `figma-export/iar/`
+## Innovation & Research ✅ đã xong → `figma-export/iar/`
 
 ### Frame
 | Frame | Trạng thái | Tên file | Lưu ý |
