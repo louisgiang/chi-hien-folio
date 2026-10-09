@@ -159,6 +159,10 @@
   line-height: 24.25px;
   white-space: pre-line; /* giữ đoạn/dòng trống như Figma */
 }
+/* Dòng tiêu đề gạch chân trong pop-up (Community Events) */
+.popup__u { text-decoration: underline; }
+/* Đầu dòng "•" treo lề: dòng cuộn thẳng hàng với chữ sau dấu chấm (Events, Competitions) */
+.popup__bullet { padding-left: 1.1em; text-indent: -1.1em; }
 
 /* Ảnh đã có sẵn góc bo trong suốt từ Figma */
 .popup__img,

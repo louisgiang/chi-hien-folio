@@ -1,5 +1,30 @@
 # NOTES: Chí Hiển's Folio
 
+## Robotics — hoàn thành nội dung pop-up (2026-10-09)
+
+- **Chữ pop-up**: chép nguyên văn từ người dùng gửi trong chat ngày 2026-10-09
+  (lưu lại ở `figma-export/robotics/text.md`), đối chiếu ref `6-117` / `6-212` / `6-237`.
+  Giữ nguyên dấu câu và dấu nháy thẳng `'` như Sports. Không sửa, không dịch.
+- **Dấu đầu dòng**: dấu `*` người dùng gõ = dấu `•` trong thiết kế. Đã quyết:
+  - GART: dấu `•` đứng trước dòng tiêu đề ("• GART Expo 2025 / 2026"), đoạn chữ không có `•`.
+    Người dùng không gõ `•` cho GART nhưng ref có, nên thêm theo ref.
+  - Community Events, Competitions: dấu `•` treo lề ở đầu đoạn chữ (dòng cuộn thẳng hàng
+    với chữ sau dấu chấm).
+- **Gạch chân tiêu đề**: chỉ Community Events gạch chân hai dòng tiêu đề (xác nhận bằng ref
+  6-212). GART và Competitions **không** gạch chân (xác nhận bằng ref 6-117 / 6-237).
+- **Mở rộng model dùng chung** (không ảnh hưởng Sports): thêm vào `PopupText` các trường
+  tùy chọn `heading` / `underline` / `headingBullet` / `bullet`; thêm `.popup__u`
+  (gạch chân) và `.popup__bullet` (treo lề 1.1em) trong `Room.css`; helper `PopupTextBlock`
+  trong `Room.tsx` dùng chung desktop + compact. Đoạn chữ không có các trường này
+  vẫn render `<p className="popup__body">` y như cũ → Sports giữ nguyên (đã kiểm tra lại).
+- **Bố cục**: giữ nguyên các khung (glass/title/ảnh/text) đã dựng sẵn từ phiên trước
+  (đo từ Figma). Đã đo chiều cao chữ render ở khổ 1920 để chắc không tràn/đè ảnh.
+  Các ô sát mép (đúng như ref vốn sát): cột phải GART còn ~29px, Competitions trên ~12px,
+  Competitions dưới ~3px trước ảnh. Nếu sau này đổi cỡ chữ cần kiểm lại ba chỗ này.
+- **Cột giữa IMG_3705**: để tĩnh, không có ô hover (theo brief).
+- Đã chạy `npm run assets -- robotics`: 3 frame hover đều qua kiểm tra
+  (nền khớp ảnh gốc, không còn khung giới thiệu). Ảnh nặng nhất `robotics-base-2x` 208KB.
+
 ## Chìa khóa chuyển động liên tục — bản local tiếp theo
 
 - Giữ nguyên chuyển động đã duyệt của vợt/giày. Chìa khóa (id nội bộ vẫn là

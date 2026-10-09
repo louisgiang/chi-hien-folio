@@ -16,7 +16,7 @@ Script tự kiểm tra ảnh hover (nền khớp ảnh gốc, không còn khung 
 
 ---
 
-## Robotics → `figma-export/robotics/`
+## Robotics ✅ đã xong → `figma-export/robotics/`
 
 ### Frame
 | Frame | Trạng thái | Tên file | Lưu ý |

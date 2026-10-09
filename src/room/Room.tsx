@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { STAGE_H, STAGE_W, useStageScale } from '../stage/Stage';
 import { boxStyle, CompactPanel, Frame, Glass, Img } from './media';
-import type { Box, Popup, RoomConfig, RoomObject } from './types';
+import type { Box, Popup, PopupText, RoomConfig, RoomObject } from './types';
 import { useFrameCrossfade } from './useFrameCrossfade';
 import { useImagesReady } from './useImagesReady';
 import { hasSportsLift, SportsLift } from './SportsLift';
@@ -27,6 +27,25 @@ function activeBox(o: RoomObject): Box {
     w: Math.max(o.base.x + o.base.w, o.hover.x + o.hover.w) - x,
     h: Math.max(o.base.y + o.base.h, o.hover.y + o.hover.h) - y,
   };
+}
+
+const BULLET = '• ';
+
+// Đoạn chữ pop-up. Mặc định (Sports): một <p> đúng như trước.
+// Khi có tiêu đề/gạch chân/đầu dòng (Robotics): tiêu đề một dòng + đoạn chữ,
+// đầu dòng "•" treo lề như trong Figma.
+function PopupTextBlock({ t, style }: { t: PopupText; style?: CSSProperties }) {
+  if (t.heading === undefined && !t.bullet) {
+    return <p className="popup__body" style={style}>{t.text}</p>;
+  }
+  return (
+    <div className="popup__body" style={style}>
+      {t.heading !== undefined && (
+        <div className={t.underline ? 'popup__u' : undefined}>{t.headingBullet ? BULLET : ''}{t.heading}</div>
+      )}
+      <div className={t.bullet ? 'popup__bullet' : undefined}>{t.bullet ? BULLET : ''}{t.text}</div>
+    </div>
+  );
 }
 
 export function Room({ room }: { room: RoomConfig }) {
@@ -186,7 +205,7 @@ export function Room({ room }: { room: RoomConfig }) {
             <Glass room={room.id} blur={blur} box={p.glass} sizes={sizes} />
             <h2 id={`${p.id}-title`} className="popup__title" style={boxStyle(p.title.box)}>{p.title.text}</h2>
             {p.texts.map((t, i) => (
-              <p key={i} className="popup__body" style={boxStyle(t.box)}>{t.text}</p>
+              <PopupTextBlock key={i} t={t} style={boxStyle(t.box)} />
             ))}
             {p.images.map((img) => (
               <Img key={img.asset} room={room.id} asset={img.asset} label={img.alt} className="popup__img" style={boxStyle(clipToStage(img.box))} />
@@ -207,7 +226,7 @@ function CompactPopup({ room, popup, panelRef, onClose }: {
   return (
     <CompactPanel labelledBy={`${popup.id}-title-c`} panelRef={panelRef} onClose={onClose}>
       <h2 id={`${popup.id}-title-c`} className="popup__title">{popup.title.text}</h2>
-      {popup.texts.map((t, i) => <p key={i} className="popup__body">{t.text}</p>)}
+      {popup.texts.map((t, i) => <PopupTextBlock key={i} t={t} />)}
       <div className="popup-compact__imgs">
         {popup.images.map((img) => (
           <Img key={img.asset} room={room} asset={img.asset} label={img.alt} className="popup__img"

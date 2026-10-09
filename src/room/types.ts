@@ -14,7 +14,19 @@ export type RoomObject = {
 };
 
 export type PopupImage = { asset: string; box: Box; alt: string };
-export type PopupText = { text: string; box: Box };
+export type PopupText = {
+  /** Đoạn nội dung (một đoạn, giữ \n đúng như Figma). */
+  text: string;
+  box: Box;
+  /** Dòng tiêu đề phía trên đoạn chữ (các pop-up Robotics). */
+  heading?: string;
+  /** Gạch chân dòng tiêu đề (Community Events). */
+  underline?: boolean;
+  /** Dấu "•" ngay trước dòng tiêu đề (GART). */
+  headingBullet?: boolean;
+  /** Dấu "•" treo lề ở đầu đoạn chữ (Community Events, Competitions). */
+  bullet?: boolean;
+};
 
 export type Popup = {
   id: string;
