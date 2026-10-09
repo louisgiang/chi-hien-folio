@@ -43,21 +43,54 @@ const readRoute = (): Route => {
 // Nền mờ lấp phần thừa hai bên (hoặc trên dưới) khi khung trình duyệt không đúng 16:9.
 const backdropOf = (page: string) => assetUrl(page, `${baseOf(page)}-sm`) ?? assetUrl(page, baseOf(page));
 
-function Page({ page, panel }: Route) {
-  return page === 'home' ? <Home panel={panel} /> : <Room room={ROOMS[page]} />;
+function Page({ page, panel, onReady }: Route & { onReady?: () => void }) {
+  return page === 'home' ? <Home panel={panel} onReady={onReady} /> : <Room room={ROOMS[page]} onReady={onReady} />;
+}
+
+// Ảnh toàn cảnh của một màn hình (gốc, hover, nền mờ của thẻ kính) để tải trước.
+const pageImages = (page: string) => {
+  const names = page === 'home'
+    ? [home.base, home.blur]
+    : [ROOMS[page].base, ...ROOMS[page].objects.flatMap((o) => [o.frame, `${o.frame}-blur`])];
+  return names.map((n) => ({ page, name: n }));
+};
+
+// Tải trước ảnh các màn hình khác khi trình duyệt rảnh, đúng cỡ mà srcset sẽ chọn,
+// để lần đầu chuyển trang trên mạng thật không phải chờ tải ảnh.
+function prefetchOtherPages(current: string) {
+  const want = 1920 * (window.innerWidth / 1920) * (window.devicePixelRatio || 1);
+  const variant = want <= 960 ? '-sm' : want <= 1920 ? '' : '-2x';
+  const pages = ['home', ...Object.keys(ROOMS)].filter((p) => p !== current && isReady(p));
+  const urls = pages.flatMap(pageImages)
+    .map(({ page, name }) => assetUrl(page, `${name}${variant}`) ?? assetUrl(page, name))
+    .filter((u): u is string => !!u);
+  const idle = (cb: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(cb) : setTimeout(cb, 200));
+  // Tải lần lượt từng ảnh để không giành băng thông với màn hình đang xem.
+  const next = (i: number) => {
+    if (i >= urls.length) return;
+    const img = new Image();
+    img.src = urls[i];
+    img.decode().catch(() => {}).finally(() => idle(() => next(i + 1)));
+  };
+  idle(() => next(0));
 }
 
 export default function App() {
   const [route, setRoute] = useState(readRoute);
-  // Màn hình cũ còn nằm bên dưới trong lúc màn hình mới mờ dần vào.
+  // Màn hình cũ nằm nguyên bên dưới cho tới khi màn hình mới đã sẵn sàng VÀ mờ dần xong,
+  // để không bao giờ lộ khoảng tối giữa hai màn hình (ảnh trên mạng có thể tải lâu hơn 300ms).
   const [leaving, setLeaving] = useState<string | null>(null);
+  const [readyPage, setReadyPage] = useState<string | null>(null);
   const current = useRef(route.page);
+  const readyRef = useRef<string | null>(null);
+  const prefetched = useRef(false);
 
   useEffect(() => {
     const onHash = () => {
       const next = readRoute();
       if (next.page !== current.current) {
-        setLeaving(current.current);
+        // Chuyển tiếp khi màn hình hiện tại còn chưa hiện xong: giữ màn hình cũ đang thấy.
+        if (readyRef.current === current.current) setLeaving(current.current);
         current.current = next.page;
       }
       setRoute(next);
@@ -66,11 +99,20 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
+  const onReady = (page: string) => () => {
+    readyRef.current = page;
+    setReadyPage(page);
+    if (!prefetched.current) {
+      prefetched.current = true;
+      prefetchOtherPages(page);
+    }
+  };
+
   useEffect(() => {
-    if (!leaving) return;
+    if (!leaving || readyPage !== route.page) return;
     const t = setTimeout(() => setLeaving(null), PAGE_FADE_MS);
     return () => clearTimeout(t);
-  }, [leaving, route.page]);
+  }, [leaving, readyPage, route.page]);
 
   return (
     <>
@@ -80,8 +122,8 @@ export default function App() {
             <Page page={leaving} panel={null} />
           </div>
         )}
-        <div key={route.page} className="room-layer" data-entering={leaving ? true : undefined}>
-          <Page {...route} />
+        <div key={route.page} className="room-layer">
+          <Page {...route} onReady={onReady(route.page)} />
         </div>
       </Stage>
       <PortraitHint />

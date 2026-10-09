@@ -29,17 +29,11 @@
   overflow: hidden;
 }
 
-/* Chuyển phòng: phòng mới mờ dần lên trên phòng cũ (Smart Animate 300ms ease-out) */
+/* Chuyển phòng: màn hình mới mờ dần lên trên màn hình cũ (Smart Animate 300ms ease-out).
+   Chỉ một lần mờ dần: .room[data-ready] trong Room.css; App giữ màn hình cũ tới khi xong. */
 .room-layer {
   position: absolute;
   inset: 0;
   /* Ảnh .frame dùng plus-lighter: cô lập mỗi màn hình để không cộng sáng lên màn hình cũ khi chuyển */
   isolation: isolate;
-}
-.room-layer[data-entering] {
-  animation: room-in var(--dur) var(--ease) both;
-}
-@keyframes room-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }

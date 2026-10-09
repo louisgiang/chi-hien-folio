@@ -408,3 +408,17 @@ Gốc `25:44` · About Me `25:76` · How to Play `25:103` · Select the Memory `
   - `useImagesReady` chờ mọi `<img>` (và `<image>` trong SVG) tải và giải mã xong, giới hạn chờ tối đa 4 giây. Sau đó phòng/trang chủ mới hiện bằng một lần mờ dần 300ms (`.room[data-ready]`).
   - Nền mờ hai bên chỉ hiện khi ảnh đã tải (`onLoad`).
   - Hiệu ứng hover không đổi.
+
+## 9. Chuyển trang bị giật (2026-10-09)
+
+- **Hiện tượng:** chuyển sang Robotics / Community / trang chủ bị giật. Sports và IAR mượt hơn, có lẽ vì ảnh đã nằm sẵn trong bộ nhớ đệm của trình duyệt.
+- **Nguyên nhân:**
+  1. Màn hình cũ bị gỡ sau đúng 300ms, trong khi màn hình mới còn ẩn tới khi ảnh giải mã xong. Trên Vercel, ảnh tải qua mạng thường lâu hơn 300ms, nên lộ khoảng tối.
+  2. Hai lần mờ dần chồng nhau (lớp trang và `.room`) lệch nhịp.
+  3. Nền mờ hai bên tắt rồi mới bật lại mỗi lần đổi trang.
+- **Cách sửa:**
+  - `App` giữ màn hình cũ cho tới khi màn hình mới báo sẵn sàng (`onReady`), rồi thêm 300ms cho nó mờ dần xong. Chỉ còn một lần mờ dần (`.room[data-ready]`).
+  - `useImagesReady` chỉ chờ ảnh đang hiển thị, bỏ qua ảnh trong pop-up/thẻ chưa mở. Ở tab nền, ảnh chỉ cần tải xong là đủ, không bắt chờ giải mã.
+  - Nền mờ hai bên: nền cũ nằm dưới cho tới khi nền mới tải xong và mờ dần lên.
+  - Sau khi màn hình đầu tiên hiện, tải trước lần lượt ảnh của các màn hình khác lúc trình duyệt rảnh, đúng cỡ `srcset` sẽ chọn.
+- **Đã kiểm tra trên máy:** 6 lần chuyển trang đều gỡ màn hình cũ khoảng 340–375ms, sau khi màn hình mới đã sẵn sàng (24–53ms). Không lần nào gỡ trước.

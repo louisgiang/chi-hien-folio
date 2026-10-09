@@ -88,7 +88,7 @@ function PopupTextBlock({ t, style }: { t: PopupText; style?: CSSProperties }) {
   );
 }
 
-export function Room({ room }: { room: RoomConfig }) {
+export function Room({ room, onReady }: { room: RoomConfig; onReady?: () => void }) {
   const scale = useStageScale();
   const compact = BODY_FONT * scale < MIN_READABLE;
 
@@ -184,7 +184,7 @@ export function Room({ room }: { room: RoomConfig }) {
   // Giải mã sẵn mọi ảnh rồi mới hiện phòng (mờ dần một lần): tránh nháy khi mở trang
   // và lần hover đầu tiên không bị khựng.
   const roomRef = useRef<HTMLDivElement>(null);
-  const ready = useImagesReady(roomRef);
+  const ready = useImagesReady(roomRef, onReady);
   // Ảnh frame thường hiển thị ở khoảng 1920 × scale px; trình duyệt tự tính thêm mật độ điểm ảnh.
   const sizes = `${Math.ceil(STAGE_W * scale)}px`;
 

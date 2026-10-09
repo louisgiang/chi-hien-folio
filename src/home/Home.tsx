@@ -14,14 +14,14 @@ const HOME = '#/';
 
 // Thẻ đang mở nằm trên đường dẫn (#/about, #/howto, #/select) để menu trong các phòng mở thẳng được.
 // Click ra ngoài thẻ hoặc Esc: về #/ (đóng thẻ).
-export function Home({ panel }: { panel: HomePanelId | null }) {
+export function Home({ panel, onReady }: { panel: HomePanelId | null; onReady?: () => void }) {
   const scale = useStageScale();
   const compact = BODY_FONT * scale < MIN_READABLE;
   const sizes = `${Math.ceil(STAGE_W * scale)}px`;
   const panels = useRef(new Map<string, HTMLElement>());
   // Như phòng: chờ ảnh giải mã xong mới hiện, tránh nháy khi mở trang.
   const rootRef = useRef<HTMLDivElement>(null);
-  const ready = useImagesReady(rootRef);
+  const ready = useImagesReady(rootRef, onReady);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
