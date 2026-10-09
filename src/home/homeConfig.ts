@@ -3,7 +3,7 @@ import type { Box } from '../room/types';
 // Trang chủ (máy game). Frame gốc 25:44; thẻ About Me 25:76, How to Play 25:103,
 // Select the Memory 25:126. Prototype chưa nối gì: nối menu + chọn phòng theo quyết định 2026-10-08.
 // Không làm chuyển động cho D-pad / phím mũi tên (brief, quy tắc 5).
-const PENDING = ' … [chờ nội dung]';
+// Chữ chép nguyên văn từ ref (Home.png = About Me, Home (1).png = How to Play), 2026-10-09.
 
 export type HomePanelId = 'about' | 'howto' | 'select';
 
@@ -19,14 +19,14 @@ export const home = {
   ] satisfies { panel: HomePanelId; label: string; box: Box }[],
   about: {
     glass: { x: 725, y: 134, w: 777, h: 444 },
-    text: { box: { x: 751, y: 159, w: 686, h: 134 }, text: 'I am Truong Chi Hien, currentl' + PENDING },
+    text: { box: { x: 751, y: 159, w: 686, h: 134 }, text: 'I am Truong Chi Hien, currently attending Hanoi-Amsterdam High School for the Gifted. Besides recently taking a liking to robotics and scientific research, I have always had interests in sports and community work. These factors have shaped who I am today: passionate for competition and eager to empower communities.' },
     // image 18, có DROP_SHADOW 4px đen 25%.
     photo: { asset: 'about-photo', alt: 'Trương Chí Hiển', box: { x: 333, y: 134, w: 351, h: 460 } },
   },
   howto: {
     glass: { x: 370, y: 147, w: 1180, h: 444 },
     title: { box: { x: 435, y: 161, w: 291, h: 107 }, text: 'How to Play' },
-    text: { box: { x: 413, y: 310, w: 1042, h: 227 }, text: 'Click on "About Me" to get a g' + PENDING },
+    text: { box: { x: 413, y: 310, w: 1042, h: 227 }, text: '• Click on "About Me" to get a glimpse into my world.\n\n• Click on "Select the Memory" to see all the memories you can explore.\n\n• Rotate between the memories by pressing the arrow keys to the side.\n\n• Click on objects present in their respective memories to dive deeper into their lore.' },
   },
   select: {
     glass: { x: 370, y: 141, w: 1180, h: 444 },

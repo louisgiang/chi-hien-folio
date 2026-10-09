@@ -48,6 +48,8 @@ export type Popup = {
   pages?: PopupPage[];
   /** Cấu hình hai chấm phân trang (bắt buộc khi có `pages`). */
   dots?: PopupDots;
+  /** Chữ nội dung (body) màu đen thay vì trắng — khi nền kính sáng (Competitions). Tiêu đề giữ trắng. */
+  dark?: boolean;
   /** Layer đồ vật nằm trên thẻ kính; vị trí lấy từ overlays.json. */
   overlay?: string;
 };

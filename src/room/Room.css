@@ -159,6 +159,9 @@
   line-height: 24.25px;
   white-space: pre-line; /* giữ đoạn/dòng trống như Figma */
 }
+/* Nền kính sáng (Competitions): chữ body đen cho dễ đọc; tiêu đề vẫn trắng như Figma.
+   Chỉ áp cho thẻ trên sân khấu — thẻ thu gọn (mobile) có nền tối riêng nên giữ chữ trắng. */
+.popup--dark .popup__body { color: #1e1e1e; }
 /* Dòng tiêu đề gạch chân trong pop-up (Community Events) */
 .popup__u { text-decoration: underline; }
 /* Đầu dòng "•" treo lề: dòng cuộn thẳng hàng với chữ sau dấu chấm (Events, Competitions) */

@@ -109,7 +109,7 @@ Nhiều pop-up đều có layer tên `image 1` / `image 2`: tìm theo ID cho kh�
 
 ---
 
-## Trang chủ → `figma-export/home/`
+## Trang chủ ✅ đã xong → `figma-export/home/`
 
 | Frame / layer | Tên file | Lưu ý |
 |---|---|---|

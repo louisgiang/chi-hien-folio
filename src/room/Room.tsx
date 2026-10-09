@@ -242,7 +242,7 @@ export function Room({ room }: { room: RoomConfig }) {
           <section
             key={p.id}
             ref={panelRef}
-            className="popup"
+            className={p.dark ? 'popup popup--dark' : 'popup'}
             data-open={isOpen || undefined}
             role="dialog"
             aria-modal="true"

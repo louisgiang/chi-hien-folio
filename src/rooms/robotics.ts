@@ -98,6 +98,8 @@ export const robotics: RoomConfig = {
     {
       id: 'competitions',
       object: 'competitions',
+      // Nền kính sáng (xanh lá) → chữ body đen như Figma (tiêu đề giữ trắng).
+      dark: true,
       glass: { x: 76, y: 83, w: 1019, h: 856 },
       title: { text: 'Competitions', box: { x: 106, y: 118, w: 314, h: 60 } },
       // Tiêu đề không gạch chân, đoạn chữ bắt đầu bằng "•".

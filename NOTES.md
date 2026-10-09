@@ -1,5 +1,34 @@
 # NOTES: Chí Hiển's Folio
 
+## Chỉnh sau duyệt (2026-10-09)
+
+- **Competitions: chữ body màu đen** (#1e1e1e), tiêu đề vẫn trắng — đúng Figma (nền kính xanh lá
+  nhạt nên chữ trắng khó đọc). Thêm `Popup.dark` + CSS `.popup--dark .popup__body`. Chỉ áp cho thẻ
+  desktop; thẻ mobile (compact) nền tối nên giữ chữ trắng. Đã quét màu chữ các ref: chỉ Competitions
+  dùng chữ body đen, các pop-up khác (GART, Events, Community, IAR) nền tối → chữ trắng (đúng).
+- **Base 4x**: người dùng xuất lại `robotics-base`, `community-base`, `iar-base`, `home-base` dạng
+  4x (7680×4320). Đã chạy lại `npm run assets` cho 4 phòng — webp xuất ra vẫn tối đa 3840 (-2x) nhưng
+  downsample từ 4x nên nét hơn. Hover IAR vẫn 2x (cảnh báo lệch viền base/hover không đổi, đã biết).
+
+## Trang chủ — hoàn thành + kiểm tra cuối (2026-10-09)
+
+- **Chữ chép nguyên văn từ ref** (lưu `figma-export/home/text.md`):
+  - About Me (Home.png): đoạn giới thiệu Truong Chi Hien.
+  - How to Play (Home (1).png): 4 đầu dòng "•" (ngăn bằng dòng trống).
+  - Select the Memory (Home (2).png): 4 phòng căn giữa (Robotics, Innovation and Research,
+    Sports, Community Services) — config đã có sẵn, khớp ref.
+- **Ảnh**: `about-photo` (đã tắt Drop shadow khi xuất; bóng dựng bằng CSS). Base `home-base`.
+- **Điều hướng kiểm lại OK**: menu (About Me/Select/How to Play) → thẻ; Select → đúng phòng;
+  nút "Chi Hien's Folio" trong phòng → về trang chủ. D-pad/X-Y-A-B chỉ là giao diện (brief quy tắc 5).
+
+### Kiểm tra cuối (brief mục 5)
+- `npm run build` sạch, **không lỗi, không cảnh báo ảnh thiếu**.
+- `dist/` ≈ 9,5 MB. Ảnh nặng nhất: `badminton-above-racket` 375KB (sprite vợt), các full-frame
+  nặng nhất ~208–217KB (sports/robotics base 2x). **Không ảnh nào > ~500KB → không cần nén thêm.**
+- Đi hết một vòng: trang chủ → 3 thẻ → từng phòng → mọi pop-up → quay về: chạy đúng.
+- Điểm còn lệch/chờ quyết định: xem các mục "Vấn đề đã biết của IAR" bên dưới (cột giữ intro,
+  "here" chưa gạch chân, base/hover lệch viền nhẹ, WICO↔cột là phỏng đoán).
+
 ## Innovation & Research (IAR) — hoàn thành (2026-10-09)
 
 - **Chữ 4 pop-up** chép nguyên văn người dùng gửi (lưu `figma-export/iar/text.md`), đối chiếu 4 ref.
