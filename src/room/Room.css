@@ -164,6 +164,13 @@
 /* Đầu dòng "•" treo lề: dòng cuộn thẳng hàng với chữ sau dấu chấm (Events, Competitions) */
 .popup__bullet { padding-left: 1.1em; text-indent: -1.1em; }
 
+/* Chấm phân trang (Competitions): chấm đầy = trang đang xem. Bấm/vuốt để lật trang. */
+.popup__dots { position: absolute; display: flex; align-items: center; }
+.popup__dot { position: relative; padding: 0; border: 0; background: none; cursor: pointer; line-height: 0; }
+/* Vùng bấm rộng hơn chấm nhỏ */
+.popup__dot::before { content: ''; position: absolute; inset: -8px; }
+.popup__dot-img { display: block; width: 100%; height: 100%; }
+
 /* Ảnh đã có sẵn góc bo trong suốt từ Figma */
 .popup__img,
 .popup__overlay {

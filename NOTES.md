@@ -25,6 +25,26 @@
 - Đã chạy `npm run assets -- robotics`: 3 frame hover đều qua kiểm tra
   (nền khớp ảnh gốc, không còn khung giới thiệu). Ảnh nặng nhất `robotics-base-2x` 208KB.
 
+## Robotics — Competitions 2 trang + sửa lỗi vị trí (2026-10-09, lần 2)
+
+- **Competitions có 2 trang** (người dùng báo: 2 chấm = 2 trang). Trang 2 Figma **không có frame**
+  nên dựng theo mẫu trang 1; nội dung + 4 ảnh (`competitions-p2-1..4`) người dùng gửi, chép nguyên văn
+  (lưu `figma-export/robotics/text.md`). Dấu nháy "New Year’s" dùng ’ (U+2019) đúng như người dùng gõ.
+- **Phân trang thật**: hai chấm (`competitions-dot-1` = đầy/đang xem, `competitions-dot-2` = rỗng)
+  nay là nút bấm lật trang; chạm vuốt ngang cũng lật (ngưỡng 40px). Thêm vào model:
+  `Popup.pages` (các trang bổ sung) + `Popup.dots` (PopupDots), component `Dots` + state `page`
+  trong `Room.tsx`, CSS `.popup__dots/.popup__dot`. Dùng chung desktop + compact. Pop-up một trang
+  (GART, Events, Sports) không đổi.
+- **Sửa lỗi vị trí ảnh** (khung của phiên trước là ước lượng bằng mắt, không lấy từ Figma vì
+  `fetch-figma.mjs` chỉ có config `sports`): hai giấy chứng nhận đặt quá thấp nên lòi khỏi thẻ kính.
+  Đo lại từ ref:
+  - `gart-2`: {x:765,y:751,w:256,h:355} → **{x:746,y:489,w:365,h:263}** (ref 6-117).
+  - `events-4`: {x:1392,y:933,w:260,h:363} → **{x:1444,y:659,w:398,h:285}** (ref 6-212).
+  Đã kiểm tra mọi ảnh pop-up Robotics nằm trong thẻ kính (đo bằng DOM).
+- Trang 2 dựng theo mẫu trang 1 nên vị trí ảnh/text là **ước lượng** (không có frame Figma để đo):
+  3 ảnh khối trên ở y:307 (x:138/448/758, 292×197), poster khối dưới {x:138,y:656,w:325,h:230},
+  chấm ở {x:138,y:904}. Nếu designer muốn khác, chỉnh ở `src/rooms/robotics.ts`.
+
 ## Chìa khóa chuyển động liên tục — bản local tiếp theo
 
 - Giữ nguyên chuyển động đã duyệt của vợt/giày. Chìa khóa (id nội bộ vẫn là

@@ -27,7 +27,9 @@ const ROOMS = {
   robotics: {
     frames: ['robotics-base', 'robotics-hover-gart', 'robotics-hover-events', 'robotics-hover-competitions'],
     photos: ['gart-1', 'gart-2', 'events-1', 'events-2', 'events-3', 'events-4',
-      'competitions-1', 'competitions-2', 'competitions-3', 'competitions-dot-1', 'competitions-dot-2'],
+      'competitions-1', 'competitions-2', 'competitions-3', 'competitions-dot-1', 'competitions-dot-2',
+      // Competitions trang 2 (không có frame Figma; dựng theo mẫu trang 1):
+      'competitions-p2-1', 'competitions-p2-2', 'competitions-p2-3', 'competitions-p2-4'],
     overlays: [],
     intro: { x: 1051, y: 167, w: 777, h: 241 },
     hoverBoxes: {

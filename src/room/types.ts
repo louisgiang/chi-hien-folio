@@ -28,6 +28,12 @@ export type PopupText = {
   bullet?: boolean;
 };
 
+/** Một trang nội dung trong pop-up nhiều trang (Competitions). */
+export type PopupPage = { texts: PopupText[]; images: PopupImage[] };
+
+/** Phân trang bằng hai chấm như Figma: chấm đầy cho trang đang xem, chấm rỗng cho trang kia. */
+export type PopupDots = { assetActive: string; assetInactive: string; box: Box; gap?: number };
+
 export type Popup = {
   id: string;
   /** Đồ vật được làm sáng khi pop-up mở: nền phía sau là ảnh hover của nó. */
@@ -35,9 +41,13 @@ export type Popup = {
   glass: Box;
   /** Xuống dòng bằng \n đúng như Figma (tiêu đề không tự ngắt dòng). */
   title: PopupText;
-  /** Một hoặc nhiều đoạn chữ, mỗi đoạn một khung như trong Figma. */
+  /** Đoạn chữ của trang 1 (hoặc trang duy nhất). */
   texts: PopupText[];
   images: PopupImage[];
+  /** Các trang bổ sung (trang 2 trở đi). Có mặt thì hiện chấm phân trang. */
+  pages?: PopupPage[];
+  /** Cấu hình hai chấm phân trang (bắt buộc khi có `pages`). */
+  dots?: PopupDots;
   /** Layer đồ vật nằm trên thẻ kính; vị trí lấy từ overlays.json. */
   overlay?: string;
 };

@@ -61,7 +61,8 @@ export const robotics: RoomConfig = {
       ],
       images: [
         { asset: 'gart-1', alt: 'GART Expo 2026', box: { x: 1261, y: 495, w: 386, h: 256 } },
-        { asset: 'gart-2', alt: 'GART Expo 2025', box: { x: 765, y: 751, w: 256, h: 355 } },
+        // Đo lại từ ref 6-117 (2026-10-09): trước đây đặt quá thấp nên giấy chứng nhận lòi khỏi thẻ kính.
+        { asset: 'gart-2', alt: 'GART Expo 2025', box: { x: 746, y: 489, w: 365, h: 263 } },
       ],
     },
     {
@@ -90,7 +91,8 @@ export const robotics: RoomConfig = {
         { asset: 'events-1', alt: 'Robotics for Good 1', box: { x: 928, y: 373, w: 349, h: 198 } },
         { asset: 'events-2', alt: 'Robotics for Good 2', box: { x: 1284, y: 373, w: 287, h: 198 } },
         { asset: 'events-3', alt: 'Robotics for Good 3', box: { x: 1582, y: 373, w: 290, h: 201 } },
-        { asset: 'events-4', alt: 'STEM day', box: { x: 1392, y: 933, w: 260, h: 363 } },
+        // Đo lại từ ref 6-212 (2026-10-09): trước đây đặt quá thấp nên giấy chứng nhận lòi khỏi thẻ kính.
+        { asset: 'events-4', alt: 'STEM day', box: { x: 1444, y: 659, w: 398, h: 285 } },
       ],
     },
     {
@@ -117,9 +119,33 @@ export const robotics: RoomConfig = {
         { asset: 'competitions-1', alt: 'VEX V5', box: { x: 138, y: 307, w: 362, h: 220 } },
         { asset: 'competitions-2', alt: 'Asia Open 1', box: { x: 138, y: 656, w: 164, h: 230 } },
         { asset: 'competitions-3', alt: 'Asia Open 2', box: { x: 316, y: 656, w: 164, h: 230 } },
-        // Ellipse 1 / 2 (14×14) dưới ảnh: chấm trang trí, xuất như ảnh để đúng màu.
-        { asset: 'competitions-dot-1', alt: '', box: { x: 138, y: 904, w: 14, h: 14 } },
-        { asset: 'competitions-dot-2', alt: '', box: { x: 155, y: 904, w: 14, h: 14 } },
+      ],
+      // Hai trang: chấm đầy (Ellipse 1) = trang đang xem, chấm rỗng (Ellipse 2) = trang kia.
+      dots: { assetActive: 'competitions-dot-1', assetInactive: 'competitions-dot-2', box: { x: 138, y: 904, w: 14, h: 14 }, gap: 3 },
+      // Trang 2: Figma không có frame — dựng theo mẫu trang 1. Nội dung người dùng gửi 2026-10-09.
+      pages: [
+        {
+          texts: [
+            {
+              box: { x: 106, y: 198, w: 943, h: 200 },
+              heading: 'VEX V5 Robotics Competition High School Vietnam National Championship: Push Back',
+              bullet: true,
+              text: 'Out of all the tournaments our team has participated in, I felt most proud about what we\'ve accomplished throughout this championship. Sleepless nights at the captain\'s house paid off with 2 of the most prestigious awards in the entire tourney.',
+            },
+            {
+              box: { x: 106, y: 556, w: 943, h: 120 },
+              heading: 'Vietnam Signature: New Year’s Mayhem (2026 VEX Robotics World Championship Qualification)',
+              bullet: true,
+              text: 'Because we qualified for the World Championship through this tourney, I vividly remember how happy we were like it was yesterday.',
+            },
+          ],
+          images: [
+            { asset: 'competitions-p2-1', alt: 'National Championship 1', box: { x: 138, y: 307, w: 292, h: 197 } },
+            { asset: 'competitions-p2-2', alt: 'National Championship 2', box: { x: 448, y: 307, w: 292, h: 197 } },
+            { asset: 'competitions-p2-3', alt: 'National Championship 3', box: { x: 758, y: 307, w: 292, h: 197 } },
+            { asset: 'competitions-p2-4', alt: 'New Year’s Mayhem', box: { x: 138, y: 656, w: 325, h: 230 } },
+          ],
+        },
       ],
     },
   ],
