@@ -11,6 +11,9 @@ export const iar: RoomConfig = {
   id: 'iar',
   name: 'Innovation and Research',
   base: 'iar-base',
+  // Khung giới thiệu ở trái; dùng frame laptop (đồ vật xa vùng này) để che.
+  intro: { x: 21, y: 87, w: 373, h: 428 },
+  introFrame: 'iar-hover-laptop',
   links: navLinks('iar'),
   objects: [
     {

@@ -17,6 +17,7 @@ export const community: RoomConfig = {
   id: 'community',
   name: 'Community Services',
   base: 'community-base',
+  intro: { x: 55, y: 879, w: 1019, h: 188 },
   links: navLinks('community'),
   objects: [
     obj('zerodong', '"Zero-Dong" Charity Fair', [493, 64, 306, 214], [467, 46, 358, 250]),

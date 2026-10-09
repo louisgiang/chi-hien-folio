@@ -71,6 +71,21 @@
 .sports-intro-cover[data-active] { opacity: 1; }
 .sports-intro-cover__image { width: 1920px; height: 1080px; display: block; }
 
+/* Lớp hover các phòng (trừ Sports): ảnh hover cắt quanh đồ vật (clip-path),
+   mờ hiện trên base đứng yên. Chỉ animate một vùng nhỏ nên mượt, không giật.
+   Lớp che khung giới thiệu cũng dùng chung class này. */
+.room__cover {
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms cubic-bezier(.22, .61, .36, 1);
+  will-change: opacity;
+}
+.room__cover[data-active] { opacity: 1; }
+/* Ảnh trong lớp che xếp chồng bình thường trên base (không dùng plus-lighter) */
+.room__cover > .frame { mix-blend-mode: normal; }
+
 /* Ô trong suốt nhận hover/click theo khung layer của đồ vật */
 .hotspot {
   z-index: 10;

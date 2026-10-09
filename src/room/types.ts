@@ -66,4 +66,10 @@ export type RoomConfig = {
   popups: Popup[];
   links?: RoomLink[];
   overlays?: Record<string, Box>;
+  /** Khung giới thiệu (1920×1080). Khi hover, dán đè vùng này bằng ảnh hover (đã ẩn giới thiệu)
+   *  để ẩn nó mà base vẫn đứng yên. Không đặt → không có lớp che (Sports tự xử lý riêng). */
+  intro?: Box;
+  /** Ảnh hover dùng cho lớp che khung giới thiệu — chọn frame có đồ vật xa vùng giới thiệu.
+   *  Mặc định: frame của đồ vật đầu tiên. */
+  introFrame?: string;
 };

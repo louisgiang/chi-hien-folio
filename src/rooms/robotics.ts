@@ -10,6 +10,7 @@ export const robotics: RoomConfig = {
   id: 'robotics',
   name: 'Robotics',
   base: 'robotics-base',
+  intro: { x: 1051, y: 167, w: 777, h: 241 },
   // Menu: prototype có Sports (6:36) → 1:7; các mục khác nối theo quyết định 2026-10-08.
   links: navLinks('robotics'),
   objects: [

@@ -1,5 +1,21 @@
 # NOTES: Chí Hiển's Folio
 
+## Hover mượt cho Robotics/Community/IAR (2026-10-09)
+
+- **Vấn đề:** các phòng này crossfade cả frame full (base ↔ hover, 3840px, mix-blend plus-lighter)
+  mỗi lần hover → nặng, giật. Sports mượt vì chỉ animate một sprite nhỏ (SportsLift).
+- **Cách làm (giống tinh thần Sports):** đồ vật các phòng này **không di chuyển, chỉ thêm quầng sáng**,
+  nên giữ **base đứng yên** và chỉ cho **phần hover cắt quanh đồ vật** mờ hiện bằng CSS transition
+  (`.room__cover`, 400ms). Dùng `clip-path` để chỉ vẽ vùng nhỏ (nhẹ) → không giật. Không cần xuất
+  ảnh mới (tái dùng frame hover sẵn có, cắt bằng CSS).
+- **Lớp che khung giới thiệu:** base đứng yên nên khung giới thiệu không tự ẩn → thêm một
+  `.room__cover` cắt đúng vùng `intro`, dán ảnh hover (đã ẩn giới thiệu) đè lên khi có đồ vật sáng.
+  Cần `RoomConfig.intro` (+ `introFrame` cho IAR: dùng `iar-hover-laptop` vì laptop xa vùng giới thiệu).
+- **Feather (làm mềm mép):** base là 4x, frame hover là 2x nên hơi lệch; mép cắt cứng thành vệt.
+  Dùng `mask-image` gradient làm mềm mép lớp che (~30px) → chỗ giáp mép hoà vào nền, hết vệt.
+- **Sports giữ nguyên** (vẫn SportsLift + crossfade cũ với base). Đã kiểm: cả 4 phòng hover ra glow,
+  khung giới thiệu ẩn, pop-up mở/đóng, không seam; Sports không đổi cấu trúc.
+
 ## Chỉnh sau duyệt (2026-10-09)
 
 - **Competitions: chữ body màu đen** (#1e1e1e), tiêu đề vẫn trắng — đúng Figma (nền kính xanh lá

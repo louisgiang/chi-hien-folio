@@ -31,6 +31,21 @@ function activeBox(o: RoomObject): Box {
 
 const BULLET = '• ';
 const SWIPE_MIN = 40;
+// Lớp hover (phòng không phải Sports) cắt quanh đồ vật; chừa lề này để chứa cả quầng sáng trắng.
+const HOVER_GLOW_MARGIN = 120;
+// Clip để chỉ vẽ vùng quanh đồ vật (nhẹ) + mask làm mềm mép (feather) để chỗ giáp mép
+// hoà vào nền — tránh vệt do base (4x) và ảnh hover (2x) hơi lệch nhau.
+const coverStyle = (b: Box, margin: number, feather = 30): CSSProperties => {
+  const x0 = b.x - margin, x1 = b.x + b.w + margin, y0 = b.y - margin, y1 = b.y + b.h + margin;
+  const mask =
+    `linear-gradient(to right, transparent ${x0}px, #000 ${x0 + feather}px, #000 ${x1 - feather}px, transparent ${x1}px),`
+    + `linear-gradient(to bottom, transparent ${y0}px, #000 ${y0 + feather}px, #000 ${y1 - feather}px, transparent ${y1}px)`;
+  return {
+    clipPath: `inset(${Math.max(0, y0)}px ${Math.max(0, STAGE_W - x1)}px ${Math.max(0, STAGE_H - y1)}px ${Math.max(0, x0)}px)`,
+    maskImage: mask, WebkitMaskImage: mask,
+    maskComposite: 'intersect', WebkitMaskComposite: 'source-in',
+  } as CSSProperties;
+};
 
 // Pop-up nhiều trang: trang 1 là texts/images của pop-up, các trang sau là p.pages.
 const popupPages = (p: Popup): PopupPage[] =>
@@ -159,10 +174,12 @@ export function Room({ room }: { room: RoomConfig }) {
 
   // Đồ vật đang sáng: pop-up đang mở ưu tiên, rồi tới hover/focus.
   const lit = openPopup?.object ?? hovered ?? focused;
+  const sportsMode = room.id === 'sports';
 
   const framesRef = useRef<HTMLDivElement>(null);
-  // Sports objects move as separate layers; never fade in their enlarged frames.
-  useFrameCrossfade(framesRef, hasSportsLift(room, lit) ? 0 : room.objects.findIndex((o) => o.id === lit) + 1);
+  // Sports: crossfade cũ (vật chuyển động bằng SportsLift, frame hover giữ opacity 0).
+  // Phòng khác: base đứng yên (active 0), hover là lớp cắt quanh đồ vật ở ngoài framesRef.
+  useFrameCrossfade(framesRef, sportsMode ? (hasSportsLift(room, lit) ? 0 : room.objects.findIndex((o) => o.id === lit) + 1) : 0);
 
   // Giải mã sẵn mọi ảnh rồi mới hiện phòng (mờ dần một lần): tránh nháy khi mở trang
   // và lần hover đầu tiên không bị khựng.
@@ -181,10 +198,25 @@ export function Room({ room }: { room: RoomConfig }) {
     >
       <div ref={framesRef} className="room__frames" aria-hidden="true">
         <Frame room={room.id} name={room.base} sizes={sizes} label={`${room.name}: trạng thái gốc`} visible />
-        {room.objects.map((o) => (
+        {sportsMode && room.objects.map((o) => (
           <Frame key={o.id} room={room.id} name={o.frame} sizes={sizes} label={`${o.label}: hover`} visible={false} />
         ))}
       </div>
+
+      {/* Phòng khác Sports: mỗi đồ vật là lớp hover cắt quanh nó, mờ hiện trên base đứng yên
+          (nhẹ hơn crossfade cả frame → không giật). Thêm lớp che khung giới thiệu khi hover. */}
+      {!sportsMode && room.objects.map((o) => (
+        <div key={o.id} className="room__cover" data-active={lit === o.id || undefined}
+          style={coverStyle(o.hover, HOVER_GLOW_MARGIN)} aria-hidden="true">
+          <Frame room={room.id} name={o.frame} sizes={sizes} label="" visible />
+        </div>
+      ))}
+      {!sportsMode && room.intro && (
+        <div className="room__cover" data-active={lit !== null || undefined}
+          style={coverStyle(room.intro, 40)} aria-hidden="true">
+          <Frame room={room.id} name={room.introFrame ?? room.objects[0].frame} sizes={sizes} label="" visible />
+        </div>
+      )}
 
       {room.id === 'sports' && (
         <div className="sports-intro-cover" data-active={lit !== null || undefined} aria-hidden="true">
