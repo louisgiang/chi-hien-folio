@@ -45,7 +45,7 @@ Script tự kiểm tra ảnh hover (nền khớp ảnh gốc, không còn khung 
 
 ---
 
-## Community Services → `figma-export/community/`
+## Community Services ✅ đã xong → `figma-export/community/`
 
 ### Frame (các frame hover không có khung giới thiệu, không cần ẩn gì)
 | Frame | Trạng thái | Tên file |

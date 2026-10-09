@@ -1,5 +1,23 @@
 # NOTES: Chí Hiển's Folio
 
+## Community Services — hoàn thành (2026-10-09)
+
+- **Chữ 7 pop-up**: chép nguyên văn người dùng gửi trong chat (lưu `figma-export/community/text.md`),
+  đối chiếu 7 ref. Mỗi pop-up = tiêu đề + 1 đoạn + ảnh (không heading/bullet như Robotics).
+- Giữ dấu gạch ngang "–" (U+2013) ở Zero-Dong, dấu nháy thẳng, dấu gạch nối "first-hand",
+  "up-and-coming", "solar-powered", "tourism-based". "Ba Vi"/"Ban Lien"/"Lao Cai" không dấu
+  đúng như người dùng gõ.
+- **Cerebral Palsy**: tiêu đề 2 dòng — "Cerebral Palsy Family" / "Association Vietnam" (`\n`).
+- **Sửa lỗi vị trí ảnh** (khung phiên trước ước lượng bằng mắt, đo lại từ ref):
+  - `zerodong-2` (giấy chứng nhận): {x:1279,y:828,w:305,h:441} dọc-dưới → **{x:1292,y:526,w:520,h:303}**
+    ngang bên phải ảnh hội chợ (ref 25-285).
+  - `advisor-1` (giấy chứng nhận): {x:85,y:746,w:411,h:589} dọc-thấp → **{x:86,y:360,w:653,h:374}**
+    ngang ngay dưới chữ (ref 26-420).
+  - 5 pop-up còn lại (racetrack, beacon, humanitas, bavi, cerebral): 2 ảnh cạnh nhau, khung
+    phiên trước đã khớp ref (lệch ≤ ~30px, giữ nguyên). Đã kiểm mọi ảnh nằm trong thẻ kính (DOM).
+- Đã chạy `npm run assets -- community`: 7 frame hover đều qua kiểm tra (nền khớp, không còn
+  khung giới thiệu). Base + hover + 7 hotspot + 6 nav chạy đúng; không có khung giữ chỗ.
+
 ## Robotics — hoàn thành nội dung pop-up (2026-10-09)
 
 - **Chữ pop-up**: chép nguyên văn từ người dùng gửi trong chat ngày 2026-10-09
